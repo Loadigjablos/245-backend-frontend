@@ -1,0 +1,88 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    font-style: normal;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    border: none;
+    color: black;
+}
+.block, div {
+    display: block;
+}
+h1, h2, h3 {
+    font-size: 30px;
+}
+table, th {
+    border: 1px solid;
+    border-collapse: collapse;
+    color: #BBBBBB;
+    border-color: #BBBBBB;
+}
+td {
+    color: #FFFFFF;
+}
+table {
+    width: 99%;
+    margin: 0.5%;
+}
+a, img {
+    padding: 5px;
+}
+body {
+    text-align: center;
+    background-color: #BBBBBB;
+}
+header {
+    background-color: #FFFFFF;
+}
+.flex {
+    display: inline-flex;
+    width: 100%;
+}
+#login {
+    text-align: right;
+}
+main {
+    text-align: center;
+    display: inline-flex;
+    width: 100%;
+    min-height: 100%;
+}
+.right {
+    width: 60%;
+    text-align: left;
+}
+.left {
+    width: 40%;
+    color: #FFFFFF;
+    background-color: #0A0A32;
+    margin: 10px;
+}
+.login-form {
+    width: 90%;
+    margin: 2.5%;
+    padding: 2.5%;
+    background-color: #0A0A32;
+    border-radius: 20px;
+}
+.login-form table {
+    border-color: #0A0A32;
+}
+td h2, td button, .login-form h1 {
+    color: #FFFFFF;
+    background-color: #0A0A32;
+}
+@media (max-width: 770px) {
+    main {
+        text-align: left;
+        display: block;
+    }
+    .right {
+        width: 100%;
+    }
+    .left {
+        width: 100%;
+        margin: 0px;
+    }
+}
