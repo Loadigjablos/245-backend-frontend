@@ -28,8 +28,8 @@ function requestPost() {
         if (request.readyState < 4) {
             return;
         }
-        type.innerHTML = request.statusText
-        message.innerHTML = request.responseText
+        type.innerText = request.statusText
+        message.innerText = request.responseText
     }
     var request = new XMLHttpRequest();
     request.open("POST", "../../API");

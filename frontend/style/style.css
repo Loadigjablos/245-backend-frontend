@@ -19,6 +19,13 @@
 .block, div {
     display: block;
 }
+.beneath {
+    
+}
+.underlined {
+    font-style: normal;
+    color: #E50010;
+}
 h1, h2, h3 {
     font-size: 30px;
     font-family: "Graviola-CsBe-light";
@@ -50,6 +57,11 @@ header {
     display: inline-flex;
     width: 100%;
 }
+canvas {
+    border: solid#0A0A32;
+    margin: 2px;
+    
+}
 #login {
     text-align: right;
 }
@@ -60,14 +72,20 @@ main {
     min-height: 100%;
 }
 .right {
-    width: 60%;
+    width: 55%;
     text-align: left;
 }
 .left {
-    width: 40%;
+    width: 45%;
     color: #FFFFFF;
     background-color: #0A0A32;
     margin: 10px;
+}
+#etage-number {
+    width: 50px;
+}
+.left h2 {
+    color: #FFFFFF;
 }
 .login-form {
     width: 90%;
@@ -82,6 +100,9 @@ main {
 td h2, td button, .login-form h1 {
     color: #FFFFFF;
     background-color: #0A0A32;
+}
+td, td a, td button {
+    font-size: 10px;
 }
 input {
     width: 70%;
