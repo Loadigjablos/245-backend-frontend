@@ -2,16 +2,26 @@
     padding: 0px;
     margin: 0px;
     font-style: normal;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Graviola-CsBe-regular", "Bahnschrift", Arial, sans-serif;
     font-size: 20px;
     border: none;
     color: black;
+}
+@font-face {
+    font-family: 'Graviola-CsBe-regular';
+    src: url("Graviola/Harbor\ Type\ -\ Graviola-Regular.otf");
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Graviola-CsBe-light';
+    src: url("Graviola/Harbor\ Type\ -\ Graviola-Light.otf");
 }
 .block, div {
     display: block;
 }
 h1, h2, h3 {
     font-size: 30px;
+    font-family: "Graviola-CsBe-light";
 }
 table, th {
     border: 1px solid;
@@ -72,6 +82,9 @@ main {
 td h2, td button, .login-form h1 {
     color: #FFFFFF;
     background-color: #0A0A32;
+}
+input {
+    width: 70%;
 }
 @media (max-width: 770px) {
     main {

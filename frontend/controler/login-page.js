@@ -5,6 +5,9 @@ const cancel = document.querySelector("#cancel");
 const username = document.querySelector("#username");
 const password = document.querySelector("#password");
 
+const type = document.querySelector("#type");
+const message = document.querySelector("#message");
+
 loginForm.addEventListener("click", function(e) {
     requestPost();
 });
@@ -25,11 +28,11 @@ function requestPost() {
         if (request.readyState < 4) {
             return;
         }
-        console.log(request.status + " " + request.statusText);
-        console.log(JSON.parse(request.responseText));
+        type.innerHTML = request.statusText
+        message.innerHTML = request.responseText
     }
     var request = new XMLHttpRequest();
-    request.open("POST", "../../");
+    request.open("POST", "../../API");
     request.onreadystatechange = onRequstUpdate;
     const requestArray = {
         username: username.value,
