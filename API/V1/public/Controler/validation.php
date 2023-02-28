@@ -82,7 +82,7 @@
 
         $user = get_user_by_id($token_exploded[1]); // array of all users
 
-        $user_token = create_token($user["email"], $user["password_hash"], $token_exploded[1]);
+        $user_token = create_token($user["name"], $user["password_hash"], $token_exploded[1]);
 
         if ($user["ban"] . "" !== "0") {
             error_function(403, "You Are Banned ;_;");

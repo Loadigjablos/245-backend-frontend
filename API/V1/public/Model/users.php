@@ -74,7 +74,7 @@
     function get_user_by_id($id) {
         global $database;
 
-        $result = $database->query("SELECT * FROM users WHERE id = '$id';");
+        $result = $database->query("SELECT name, type FROM users WHERE id = '$id';");
 
         if ($result == false) {
             error_function(500, "Error");
@@ -87,6 +87,10 @@
 		} else {
             error_function(404, "not Found");
         }
+
+        $result = $result->fetch_assoc();
+
+	    echo json_decode($result);
     }
 
     function get_skill_by_id($id) {
