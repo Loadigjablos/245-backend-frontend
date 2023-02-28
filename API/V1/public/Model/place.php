@@ -25,4 +25,12 @@
 
     }
 
+    function create_place($position, $name, $type) {
+        global $database;
+
+        $result = $database->query("INSERT INTO `places` (`position`,`name`, `type`) VALUES ('$position', '$name', '$type');");
+
+		return true;
+    }
+
 ?>

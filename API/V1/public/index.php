@@ -52,12 +52,12 @@
         $name = validate_string($JSON_data["username"]);
         $password = validate_string($JSON_data["password"]);
 
-            if (!$password) {
-                error_function(400, "password is invalid, must contain at least 5 characters");
-            }
-            if (!$name) {
-                error_function(400, "username is invalid, must contain at least 5 characters");
-            }
+        if (!$password) {
+            error_function(400, "password is invalid, must contain at least 5 characters");
+        }
+        if (!$name) {
+            error_function(400, "username is invalid, must contain at least 5 characters");
+        }
 
         $password = hash("sha256", $password);
 
@@ -71,11 +71,14 @@
 
         setcookie("token", $token);
 
-        $id = $user["id"];
+        echo "Successfully logged in";
+        
+
+       /* $id = $user["id"];
 
         $id = get_user_by_id($id);
 
-        echo json_encode($id);
+        echo json_encode($id);*/
 
         return $response;
     });
@@ -88,12 +91,10 @@
         return $current_user;
     };
 
-    $app->get("/User/{id}", function (Request $request, Response $response, $args) {
-        //validate_token(); // unotherized pepole will get rejected
+    $app->get("/Whoami", function (Request $request, Response $response, $args) {
+        $id =  user_validation(); // unotherized pepole will get rejected
 
-		$id = $args["id"];
-
-		$user = get_user_by_id($id);
+		$user = get_user_id($id);
 
 		if ($user) {
 	        echo json_encode($user);
@@ -108,8 +109,26 @@
         return $response;
     });
 
+    $app->get("/Users", function (Request $request, Response $response, $args) {
+        validate_token(); // unotherized pepole will get rejected
+
+		$users = get_all_users();
+
+		if ($users) {
+	        echo json_encode($users);
+		}
+		else if (is_string($users)) {
+			error($users, 500);
+		}
+		else {
+			error("The ID "  . $id . " was not found.", 404);
+		}
+
+        return $response;
+    });
+
     $app->get("/Place/{id}", function (Request $request, Response $response, $args) {
-        //validate_token(); // unotherized pepole will get rejected
+        validate_token(); // unotherized pepole will get rejected
 
 		$id = $args["id"];
 
@@ -127,6 +146,68 @@
 
         return $response;
     });
+
+    $app->post("/Place", function (Request $request, Response $response, $args) {
+
+		validate_token();
+
+		$request_body_string = file_get_contents("php://input");
+
+		$request_data = json_decode($request_body_string, true);
+
+        $position = strip_tags(addslashes($request_data["position"]));
+        $name = strip_tags(addslashes($request_data["name"]));
+		$type = strip_tags($request_data["type"]);
+
+
+        //The name can not be empty
+		if (empty($position)) {
+			error_function(400, "The (position) field must not be empty.");
+		}
+		//Limit the length of the name.
+		if (strlen($position) > 500) {
+			error_function(400, "The name is too long. Please enter less than 500 letters.");
+		}
+
+		//The name can not be empty
+		if (empty($name)) {
+			error_function(400, "The (name) field must not be empty.");
+		}
+		//Limit the length of the name.
+		if (strlen($name) > 500) {
+			error_function(400, "The name is too long. Please enter less than 500 letters.");
+		}
+
+		//The type have to be an integer
+		if (!isset($request_data["type"])) {
+			error_function(400, "Please provide the (type) field.");
+		}
+		//Limit the type nummber
+		/*if ($request_data["type"] !== "R" || $request_data["type"] !="P") {
+			error_function(400, "The type must either R or P.");
+		}*/
+
+        if (!ctype_alpha($request_data["type"])) {
+            echo "Error: Input should contain only alphabetic characters."; 
+        } 
+        elseif (ctype_upper($request_data["type"])) { 
+            echo "Input is a capital letter."; 
+        }
+
+        if ($request_data["type"] !== ) {
+            # code...
+        }
+
+		//checking if allthing was good
+		if (create_place($position, $name, $type) === true) {
+			echo "The Place was successfuly created.";
+		}
+		//an server error
+		else {
+			error_function(500, "An error while saving the place.");
+		}
+		return $response;		
+	});
 
 
     $app->run();
