@@ -80,6 +80,7 @@ main {
     color: #FFFFFF;
     background-color: #0A0A32;
     margin: 10px;
+    overflow-x: auto;
 }
 #etage-number {
     width: 50px;
@@ -97,17 +98,14 @@ main {
 .login-form table {
     border-color: #0A0A32;
 }
-td h2, td button, .login-form h1 {
+td h2, td button, .login-form h1, td a {
     color: #FFFFFF;
     background-color: #0A0A32;
-}
-td, td a, td button {
-    font-size: 10px;
 }
 input {
     width: 70%;
 }
-@media (max-width: 770px) {
+@media (max-width: 1550px) {
     main {
         text-align: left;
         display: block;
