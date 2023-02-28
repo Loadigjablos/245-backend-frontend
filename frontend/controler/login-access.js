@@ -8,11 +8,6 @@ loginButton.addEventListener("click", function(e) {
     }
 });
 
-var request = new XMLHttpRequest();
-request.open("GET", "../../");
-request.onreadystatechange = onRequstUpdate;
-request.send();
-
 /**
  * here will be the validation of the result
  * @returns if the server didn't responde corectly
@@ -21,7 +16,12 @@ const onRequstUpdate = function() {
     if (request.readyState < 4) {
         return;
     }
-    const response = JSON.parse(request.responseText);
     console.log(request.status + " " + request.statusText);
+    const response = JSON.parse(request.responseText);
     console.log(response);
 }
+
+let request = new XMLHttpRequest();
+request.open("GET", "../../../../API/V1/WhoAmI");
+request.onreadystatechange = onRequstUpdate;
+request.send();

@@ -88,17 +88,17 @@ main {
 .left h2 {
     color: #FFFFFF;
 }
-.login-form {
+.black-box {
     width: 90%;
     margin: 2.5%;
     padding: 2.5%;
     background-color: #0A0A32;
     border-radius: 20px;
 }
-.login-form table {
+.black-box table {
     border-color: #0A0A32;
 }
-td h2, td button, .login-form h1, td a {
+td h2, td button, .black-box h1, td a {
     color: #FFFFFF;
     background-color: #0A0A32;
 }
@@ -117,4 +117,7 @@ input {
         width: 100%;
         margin: 0px;
     }
+}
+a:hover, button:hover {
+    color: #888888;
 }

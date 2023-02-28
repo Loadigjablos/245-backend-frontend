@@ -1,16 +1,19 @@
+const dateFrom = document.querySelector("#date-from");
+const dateTo = document.querySelector("#date-to");
+const place = document.querySelector("#place");
+const description = document.querySelector("#description");
 
-const loginForm = document.querySelector("#login-form");
+const confirmT = document.querySelector("#confirm");
 const cancel = document.querySelector("#cancel");
 
-const username = document.querySelector("#username");
-const password = document.querySelector("#password");
 
-const type = document.querySelector("#type");
-const message = document.querySelector("#message");
 
-loginForm.addEventListener("click", function(e) {
+
+
+confirmT.addEventListener("click", function(e) {
     requestPost();
 });
+
 cancel.addEventListener("click", function(e) {
     window.location = "../../index.html";
 });
@@ -34,8 +37,22 @@ function requestPost() {
     request.open("POST", "../../../../API/V1/Login");
     request.onreadystatechange = onRequstUpdate;
     const requestArray = {
-        username: username.value,
-        password: password.value,
+        from: dateFrom.value,
+        to: dateTo.value,
+        place: place.value,
+        description: description.value,
     };
     request.send(JSON.stringify(requestArray));
 }
+
+
+
+
+
+
+
+
+
+
+
+
