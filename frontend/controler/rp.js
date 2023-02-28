@@ -75,18 +75,57 @@ function RenderAll() {
                 ctx.fillText("To:" + Element.bocked.to, Element.position.x + (Element.position.width / 2) - (("To:" + Element.bocked.to).length * 2), Element.position.y + (Element.position.height / 2) + 20);
             }
         }
-        tabelReservations.innerHTML += `
-        <tr>
-            <td>${Element.name}</td>
-            <td>${Element.bocked ? null : "nicht besetzt"}</td>
-            <td>${Element.description}</td>
-            <td><button onclick="reservationDelete(${Element.name})">Löschen</button></td>
-            <td><a href="reservation-bearbeiten.html#${Element.name}">Reserve</a></td>
-            <td><a href="reservation.html#${Element.name}">Reserve</a></td>
-        </tr>
-        `
+        if (Element.bocked == null) {
+            var bocked = "nicht besetzt";
+            tabelReservations.innerHTML += `
+            <tr>
+                <td>${Element.name}</td>
+                <td>${bocked}</td>
+                <td>${Element.description}</td>
+                <td>-</td>
+                <td>-</td>
+                <td><a href="reservation.html#${Element.name}">Reservieren</a></td>
+            </tr>
+            `;
+        } else {
+            var bocked = "besetzt";
+            tabelReservations.innerHTML += `
+            <tr>
+                <td>${Element.name}</td>
+                <td>${bocked}</td>
+                <td>${Element.description}</td>
+                <td><button onclick="reservationDelete('${Element.name}')">Löschen</button></td>
+                <td><a href="reservation-edit.html#${Element.name}">Editieren</a></td>
+                <td>-</td>
+            </tr>
+            `;
+        }
     });
 
+}
+
+/**
+ * 
+ * @param {*} name 
+ */
+function reservationDelete(name) {
+    /**
+     * here will be the validation of the result
+     * @returns if the server didn't responde corectly
+     */
+    const onRequstUpdate = function() {
+        if (request.readyState < 4) {
+            return;
+        }
+        const response = JSON.parse(request.responseText);
+        console.log(request.status + " " + request.statusText);
+        console.log(response);
+    }
+
+    var request = new XMLHttpRequest();
+    request.open("GET", "../../API/v1/Reservation/" + name);
+    request.onreadystatechange = onRequstUpdate;
+    request.send();
 }
 
 let data = [
@@ -94,13 +133,13 @@ let data = [
         name: "thing",
         position: {
             width: 200,
-            height: 200,
+            height: 100,
             x: 20,
             y: 20,
             etage: 0,
         },
         typeThing: "p",
-        description: "wertzui876545678976543456789876t54rertzu8i90",
+        description: "wertzui87654 567897654345678987 6t54rertzu8i90",
         bocked: {
             host: "james",
             from: "20.02.2022 20:30",
@@ -116,7 +155,7 @@ let data = [
             y: 420,
             etage: 0,
         },
-        description: "wertzui876545678976543456789876t54rertzu8i90",
+        description: "wertzui87 654567897654345678987 6t54rertzu8i90",
         typeThing: "p",
         bocked: null,
     },
@@ -129,7 +168,7 @@ let data = [
             y: 20,
             etage: 0,
         },
-        description: "wertzui876545678976543456789876t54rertzu8i90",
+        description: "wertzui876 '-_'_-' 876t54rertzu8i90",
         typeThing: "r",
         bocked: {
             host: "jeffry",
