@@ -1,29 +1,29 @@
 <?php
     // Database conection string
     require "util/database.php";
-
+ 
     function get_all_users() {
         global $database;
 
-        $result = $database->query("SELECT * FROM users;");
+        $result = $database->query("SELECT name FROM users;");
 
         if ($result == false) {
             error_function(500, "Error");
-		} else if ($result !== true) {
-			if ($result->num_rows > 0) {
+        } else if ($result !== true) {
+            if ($result->num_rows > 0) {
                 $result_array = array();
-				while ($user = $result->fetch_assoc()) {
+                while ($user = $result->fetch_assoc()) {
                     $result_array[] = $user;
                 }
                 return $result_array;
-			} else {
+            } else {
                 error_function(404, "not Found");
             }
-		} else {
+        } else {
             error_function(404, "not Found");
         }
-
     }
+
 
     function change_player_data($data, $id) {
         global $database;
@@ -72,6 +72,28 @@
     }
 
     function get_user_by_id($id) {
+        global $database;
+
+        $result = $database->query("SELECT * FROM users WHERE id = '$id';");
+
+        if ($result == false) {
+            error_function(500, "Error");
+		} else if ($result !== true) {
+			if ($result->num_rows > 0) {
+                return $result->fetch_assoc();
+			} else {
+                error_function(404, "not Found");
+            }
+		} else {
+            error_function(404, "not Found");
+        }
+
+        $result = $result->fetch_assoc();
+
+	    echo json_decode($result);
+    }
+
+    function get_user_id($id) {
         global $database;
 
         $result = $database->query("SELECT name, type FROM users WHERE id = '$id';");
