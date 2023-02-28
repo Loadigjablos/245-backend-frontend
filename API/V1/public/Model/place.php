@@ -33,4 +33,33 @@
 		return true;
     }
 
+    function update_place($id, $position, $name, $type) {
+		global $database;
+
+		$result = $database->query("UPDATE `places` SET position = '$position', name = '$name', type = $type WHERE id = $id");
+
+		if (!$result) {
+			return false;
+		}
+		
+		return true;
+	}
+
+    function delete_place($id) {
+		global $database;
+
+		$id = intval($id);
+
+		$result = $database->query("DELETE FROM `places` WHERE id = $id");
+        
+		if (!$result) {
+			return false;
+		}
+		else if ($database->affected_rows == 0) {
+			return null;
+		}
+		else {
+			return true;
+		}
+	}
 ?>
