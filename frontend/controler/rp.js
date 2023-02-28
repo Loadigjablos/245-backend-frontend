@@ -123,7 +123,7 @@ function reservationDelete(name) {
     }
 
     var request = new XMLHttpRequest();
-    request.open("GET", "../../API/v1/Reservation/" + name);
+    request.open("GET", "../../API/V1/Reservation/" + name);
     request.onreadystatechange = onRequstUpdate;
     request.send();
 }
