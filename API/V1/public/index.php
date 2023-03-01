@@ -22,6 +22,7 @@
     require_once "Controler/validation.php";
     require "Model/users.php";
     require "Model/place.php";
+    require_once "Controler/error-and-info-messages.php";
 
     // all response data will be in the Json Fromat
     header("Content-Type: application/json");
@@ -69,17 +70,10 @@
 
         $token = create_token($name, $password, $user["id"]);
 
-        setcookie("token", $token);
+        setcookie("token", $token, time() + 3600);
 
-        echo "Successfully logged in";
+        message_function(200, "Successfully logged in");
         
-
-       /* $id = $user["id"];
-
-        $id = get_user_by_id($id);
-
-        echo json_encode($id);*/
-
         return $response;
     });
 
@@ -159,38 +153,43 @@
         //The position field cannot be empty and must not exceed 2048 characters
         if (empty($position)) {
             error_function(400, "The (position) field must not be empty.");
-        } elseif (strlen($position) > 2048) {
+        } 
+        elseif (strlen($position) > 2048) {
             error_function(400, "The (position) field must be less than 2048 characters.");
         }
     
         //The name field cannot be empty and must not exceed 255 characters
         if (empty($name)) {
             error_function(400, "The (name) field must not be empty.");
-        } elseif (strlen($name) > 255) {
+        } 
+        elseif (strlen($name) > 255) {
             error_function(400, "The (name) field must be less than 255 characters.");
         }
     
         //The type field must be an uppercase alphabetic character
         if (empty($type)) {
             error_function(400, "Please provide the (type) field.");
-        } elseif (!ctype_alpha($type)) {
+        } 
+        elseif (!ctype_alpha($type)) {
             error_function(400, "The (type) field must contain only alphabetic characters.");
-        } elseif (!ctype_upper($type)) {
+        } 
+        elseif (!ctype_upper($type)) {
             error_function(400, "The (type) field must be an uppercase alphabetic character.");
-        } elseif ($type !== 'R' && $type !== 'P') {
+        } 
+        elseif ($type !== 'R' && $type !== 'P') {
             error_function(400, "The (type) field must be either 'R' or 'P'.");
         }
     
         //checking if everything was good
         if (create_place($position, $name, $type) === true) {
-            echo "The Place was successfully created.";
+            message_function(200, "The Place was successfully created.");
         } else {
             error_function(500, "An error occurred while saving the place.");
         }
         return $response;        
     });
 
-    $app->put("/Plcae/{id}", function (Request $request, Response $response, $args) {
+    $app->put("/Place/{id}", function (Request $request, Response $response, $args) {
 
         validate_token();
 		
@@ -199,25 +198,37 @@
 		$place = get_room($id);
 		
 		if (!$place) {
-			error("No place found for the ID " . $id . ".", 404);
+			error_function(404, "No place found for the ID " . $id . ".");
 		}
 		
 		$request_body_string = file_get_contents("php://input");
 		
 		$request_data = json_decode($request_body_string, true);
+        $position = trim($request_data["position"]);
+        $name = trim($request_data["name"]);
+        $type = trim($request_data["type"]);
 
+        if (empty($name)) {
+            error_function(400, "Please provide the (name) field.");
+        } 
+        if (empty($position)) {
+            error_function(400, "Please provide the (position) field.");
+        } 
         if (empty($type)) {
             error_function(400, "Please provide the (type) field.");
-        } elseif (!ctype_alpha($type)) {
+        } 
+        elseif (!ctype_alpha($type)) {
             error_function(400, "The (type) field must contain only alphabetic characters.");
-        } elseif (!ctype_upper($type)) {
+        } 
+        elseif (!ctype_upper($type)) {
             error_function(400, "The (type) field must be an uppercase alphabetic character.");
-        } elseif ($type !== 'R' && $type !== 'P') {
+        } 
+        elseif ($type !== 'R' && $type !== 'P') {
             error_function(400, "The (type) field must be either 'R' or 'P'.");
         }
 		
-		if (update_place($id, $place["position"], $place["name"],$place["type"])) {
-			echo "The placedata were successfully updated";
+		if (update_place($id, $position, $name, $type)) {
+			message_function(200 ,"The placedata were successfully updated");
 		}
 		else {
 			error_function(500, "An error occurred while saving the place data.");
@@ -238,7 +249,7 @@
 			error_function(404, "No place found for the ID " . $id . ".");
 		}
 		else {
-			echo "The place was succsessfuly deleted.";
+			message_function(200, "The place was succsessfuly deleted.");
 		}
 		
 		return $response;

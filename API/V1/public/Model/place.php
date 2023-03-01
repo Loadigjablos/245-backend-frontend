@@ -36,7 +36,7 @@
     function update_place($id, $position, $name, $type) {
 		global $database;
 
-		$result = $database->query("UPDATE `places` SET position = '$position', name = '$name', type = $type WHERE id = $id");
+		$result = $database->query("UPDATE `places` SET position = '$position', name = '$name', type = '$type' WHERE id = $id;");
 
 		if (!$result) {
 			return false;
