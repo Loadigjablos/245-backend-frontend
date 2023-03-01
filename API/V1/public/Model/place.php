@@ -50,7 +50,7 @@
 
 		$id = intval($id);
 
-		$result = $database->query("DELETE FROM `places` WHERE id = $id");
+		$result = $database->query("DELETE FROM `places` WHERE id = $id;");
         
 		if (!$result) {
 			return false;

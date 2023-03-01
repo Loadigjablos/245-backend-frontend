@@ -22,25 +22,6 @@
         return $response;
     });
 
-    $app->get("/Places", function (Request $request, Response $response, $args) {
-        validate_token(); // unotherized pepole will get rejected
-
-        $id = intval($args["id"]);
-        
-        $place = get_room($id);
-
-        if ($place) {
-            echo json_encode($place);
-        }
-        else if (is_string($place)) {
-            error($place, 500);
-        }
-        else {
-            error("The ID "  . $id . " was not found.", 404);
-        }
-
-        return $response;
-    });
 
     $app->post("/Place", function (Request $request, Response $response, $args) {
         validate_token();

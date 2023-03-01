@@ -22,6 +22,7 @@
     require_once "Controler/validation.php";
     require "Model/users.php";
     require "Model/place.php";
+    require "Model/events.php";
     require_once "Controler/error-and-info-messages.php";
 
     // all response data will be in the Json Fromat
