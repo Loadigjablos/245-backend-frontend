@@ -22,6 +22,24 @@
         return $response;
     });
 
+    $app->get("/Places", function (Request $request, Response $response, $args) {
+        validate_token(); // unotherized pepole will get rejected
+
+        $places = get_all_places();
+
+        if ($places) {
+            echo json_encode($places);
+        }
+        else if (is_string($places)) {
+            error($places, 500);
+        }
+        else {
+            error("There is no place", 404);
+        }
+
+        return $response;
+    });
+
 
     $app->post("/Place", function (Request $request, Response $response, $args) {
         validate_token();
