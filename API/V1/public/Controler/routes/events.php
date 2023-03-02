@@ -60,7 +60,7 @@
         if (empty($to_date)) {
             error_function(400, "The (to date) field must not be empty.");
         } 
-        elseif (strlen($date_time) > 2048) {
+        elseif (strlen($to_date) > 2048) {
             error_function(400, "The (date_time) field must be less than 2048 characters.");
         }
 
