@@ -81,35 +81,8 @@
 
         if (strlen($description) > 2048) {
             error_function(400, "The (host) field must be less than 255 characters.");
-<<<<<<< HEAD
-        }   
-        
-        
-    //check if from_date is before to_date
-        if (strtotime($from_date) >= strtotime($to_date)) {
-            error_function(400, "The (from date) field must be before the (to date) field.");
         }
 
-    
-=======
-        }
-        
-        $serch = get_room($place_name);
-        if(!$serch){
-            error_function(400, "Place Name doesn't exist");
-        }
-        else if (is_string(!$serch)){
-            error_function(400, $serch);
-        }
-
-        $serch = get_user_by_username($place_name);
-        if(!$serch){
-            error_function(400, "name doesn't exist");
-        }
-        else if (is_string(!$serch)){
-            error_function(400, $serch);
-        }
->>>>>>> 6810ee7a601b11f5e1163a65a7f4ac9f34c7f925
         //checking if everything was good
         if (create_reservation($from_date, $to_date, $place_name, $host, $description) === true) {
             message_function(200, "The reservation was successfully created.");

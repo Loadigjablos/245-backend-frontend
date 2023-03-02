@@ -130,9 +130,7 @@
             echo "No expired reservations found. \n";
         }
     });
-    
-
-
+   
     require "Controler/routes/users.php";
     require "Controler/routes/events.php";
     require "Controler/routes/place.php";
