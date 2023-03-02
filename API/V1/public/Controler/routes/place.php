@@ -2,22 +2,22 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use Psr\Http\Message\ServerRequestInterface as Request;
 
-    $app->get("/Place/{id}", function (Request $request, Response $response, $args) {
+    $app->get("/Place/{place_name}", function (Request $request, Response $response, $args) {
         validate_token(); // unotherized pepole will get rejected
 
-        $id = $args["id"];
+		$place_name = $args["place_name"];
 
-        $place = get_room($id);
+		$place = get_room($place_name);
 
-        if ($place) {
+		if ($place) {
             echo json_encode($place);
-        }
-        else if (is_string($place)) {
-            error($place, 500);
-        }
-        else {
-            error("The ID "  . $id . " was not found.", 404);
-        }
+		}
+		else if (is_int($place)) {
+			error($place, 500);
+		}
+		else {
+			error("The ID "  . $place_name . " was not found.", 404);
+		}
 
         return $response;
     });
@@ -71,21 +71,21 @@
         return $response;        
     });
 
-    $app->put("/Place/{id}", function (Request $request, Response $response, $args) {
+       $app->put("/Place/{place_name}", function (Request $request, Response $response, $args) {
 
         validate_token();
-        
-        $id = intval($args["id"]);
-        
-        $place = get_room($id);
-        
-        if (!$place) {
-            error_function(404, "No place found for the ID " . $id . ".");
-        }
-        
-        $request_body_string = file_get_contents("php://input");
-        
-        $request_data = json_decode($request_body_string, true);
+		
+		$place_name = $args["place_name"];
+		
+		$place = get_room($place_name);
+		
+		if (!$place) {
+			error_function(404, "No place found for the name " . $place_name . ".");
+		}
+		
+		$request_body_string = file_get_contents("php://input");
+		
+		$request_data = json_decode($request_body_string, true);
         $position = trim($request_data["position"]);
         $name = trim($request_data["name"]);
         $type = trim($request_data["type"]);
@@ -108,16 +108,16 @@
         elseif ($type !== 'R' && $type !== 'P') {
             error_function(400, "The (type) field must be either 'R' or 'P'.");
         }
-        
-        if (update_place($id, $position, $name, $type)) {
-            message_function(200 ,"The placedata were successfully updated");
-        }
-        else {
-            error_function(500, "An error occurred while saving the place data.");
-        }
-        
-        return $response;
-    });
+		
+		if (update_place($place_name, $position, $name, $type)) {
+			message_function(200 ,"The place data were successfully updated");
+		}
+		else {
+			error_function(500, "An error occurred while saving the place data.");
+		}
+		
+		return $response;
+	});
 
     $app->delete("/Place/{place_name}", function (Request $request, Response $response, $args) {
 		
