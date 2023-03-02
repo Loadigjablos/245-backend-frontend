@@ -1,29 +1,28 @@
-
 const etageNumber = document.querySelector("#etage-number");
 const etageUp = document.querySelector("#etage-up");
 const etageDown = document.querySelector("#etage-down");
 
 let etage = 0;
 
-etageDown.addEventListener("click", function(e) {
-    if (!(etage < -99)) {
-        etage -= 1
-    }
-    placeEtageNumber();
-    RenderAll();
+etageDown.addEventListener("click", function (e) {
+  if (!(etage < -99)) {
+    etage -= 1;
+  }
+  placeEtageNumber();
+  RenderAll();
 });
-etageUp.addEventListener("click", function(e) {
-    if (!(etage > 99)) {
-        etage += 1;
-    }
-    placeEtageNumber();
-    RenderAll();
+etageUp.addEventListener("click", function (e) {
+  if (!(etage > 99)) {
+    etage += 1;
+  }
+  placeEtageNumber();
+  RenderAll();
 });
 function placeEtageNumber() {
-    etageNumber.innerHTML = etage;
-    if(etage === 0) {
-        etageNumber.innerHTML = "EG";
-    }
+  etageNumber.innerHTML = etage;
+  if (etage === 0) {
+    etageNumber.innerHTML = "EG";
+  }
 }
 
 // THIS IS TO DISPLAY ALL THE ROOMS AND PARKINGSPACES
@@ -33,11 +32,11 @@ const tabelReservations = document.querySelector("#tabel-reservations");
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 
-const CANVAS_WIDTH = canvas.width = 900;
-const CANVAS_HEIGHT = canvas.height = 900;
+const CANVAS_WIDTH = (canvas.width = 900);
+const CANVAS_HEIGHT = (canvas.height = 900);
 
 function RenderAll() {
-    tabelReservations.innerHTML = `
+  tabelReservations.innerHTML = `
     <tr>
         <th>Name</th>
         <th>Besetzt?</th>
@@ -47,137 +46,180 @@ function RenderAll() {
         <th>Reservieren</th>
     </tr>
     `;
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    data.forEach((Element, index) => {
-        if (Element.position.etage == etage) {
-            ctx.fillStyle = "#000000";
-            if (Element.bocked == null) {
-                ctx.fillStyle = "#00AF00";
-            } else {
-                ctx.fillStyle = "#AF0000";
-            }
-            ctx.fillRect(Element.position.x, Element.position.y, Element.position.width, Element.position.height);
-            
-            // WHITE
-            ctx.fillStyle = "#FFFFFF";
+  /**
+   * This Algorith is rendering all Places and all the Reservations that ar Set to this place
+   */
+  dataPlaces.forEach((ElementPlace, index) => {
+    if(ElementPlace == undefined) {
+      MessageUI("Error", "Places Data Is Corupted");
+    } else {
+      let AllReservationsFromThisPlace = [];
 
-            let type = "";
-            if (Element.typeThing = "r") {
-                type = "Raum";
-            } else if(Element.typeThing = "p") {
-                type = "Parkplatz";
+      // Checks if there is a Reservation for this Place
+      dataReservated.forEach((ElementReservation) => {
+        if(ElementReservation == undefined) {
+          MessageUI("Error", "Reservation Data Is Corupted");
+        } else if(ElementReservation.from_date == undefined || ElementReservation.to_date == undefined || ElementReservation.host == undefined) {
+          MessageUI("Error", "Data Is Incomplete");
+        } else {
+          // Reservations For this place are added to array to list them later up
+          if (ElementReservation.place_name == ElementPlace.name) {
+            const reservation = {
+              from: ElementReservation.from_date,
+              to: ElementReservation.to_date,
+              host: ElementReservation.host,
+              description: ElementReservation.description
             }
-            ctx.fillText(index + ": " + Element.name + ", " + type, Element.position.x + (Element.position.width / 2) - ((index + " :" + Element.name + ", " + type).length * 2), Element.position.y + (Element.position.height / 2) - 10);
-            if (Element.bocked != null) {
-                ctx.fillText("Host: " + Element.bocked.host, Element.position.x + (Element.position.width / 2) - (("Host: " + Element.bocked.host).length * 2), Element.position.y + (Element.position.height / 2));
-                ctx.fillText("From: " + Element.bocked.from, Element.position.x + (Element.position.width / 2) - (("From: " + Element.bocked.from).length * 2), Element.position.y + (Element.position.height / 2) + 10);
-                ctx.fillText("To:" + Element.bocked.to, Element.position.x + (Element.position.width / 2) - (("To:" + Element.bocked.to).length * 2), Element.position.y + (Element.position.height / 2) + 20);
-            }
+            AllReservationsFromThisPlace.push(reservation);
+          }
         }
-        if (Element.bocked == null) {
+      });
+
+      const x = parseInt(JSON.parse(ElementPlace.position).x);
+      const y = parseInt(JSON.parse(ElementPlace.position).y);
+      const width = parseInt(JSON.parse(ElementPlace.position).width);
+      const height = parseInt(JSON.parse(ElementPlace.position).height);
+
+      ctx.fillStyle = "#000000";
+      if (AllReservationsFromThisPlace == null) {
+        ctx.fillStyle = "#00AF00";
+      } else {
+        ctx.fillStyle = "#AF0000";
+      }
+
+      ctx.fillRect(x, y, width, height);
+
+      let type = "";
+      if ((Element.type == "r")) {
+        type = "Raum";
+      } else if ((Element.type == "p")) {
+        type = "Parkplatz";
+      } else {
+        type = "UnIdentified Thing";
+      }
+      /*
+            ctx.fillText(
+              index + ": " + Element.name + ", " + type,
+              x + (width / 2) - (index + " :" + Element.name + ", " + type).length * 2,
+                y + (height / 2) - 10
+            );
+
+            if (Element.data_time == null) {
             var bocked = "nicht besetzt";
             tabelReservations.innerHTML += `
-            <tr>
-                <td>${Element.name}</td>
-                <td>${bocked}</td>
-                <td>${Element.description}</td>
-                <td>-</td>
-                <td>-</td>
-                <td><a href="reservation.html#${Element.name}">Reservieren</a></td>
-            </tr>
-            `;
-        } else {
+                  <tr>
+                      <td>${Element.place_name}</td>
+                      <td>${bocked}</td>
+                      <td>${Element.description}</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td><a href="reservation.html#${Element.place_name}">Reservieren</a></td>
+                  </tr>
+                  `;
+          } else {
             var bocked = "besetzt";
             tabelReservations.innerHTML += `
-            <tr>
-                <td>${Element.name}</td>
-                <td>${bocked}</td>
-                <td>${Element.description}</td>
-                <td><button onclick="reservationDelete('${Element.name}')">Löschen</button></td>
-                <td><a href="reservation-edit.html#${Element.name}">Editieren</a></td>
-                <td>-</td>
-            </tr>
-            `;
-        }
-    });
-
+                  <tr>
+                      <td>${Element.place_name}</td>
+                      <td>${bocked}</td>
+                      <td>${Element.description}</td>
+                      <td><button onclick="reservationDelete('${Element.place_name}')">Löschen</button></td>
+                      <td><a href="reservation-edit.html#${Element.place_name}">Editieren</a></td>
+                      <td>-</td>
+                  </tr>
+                  `;
+          }
+    */
+    }
+  });
 }
 
 /**
- * 
- * @param {*} name 
+ *
+ * @param {*} name
  */
 function reservationDelete(name) {
-    /**
-     * here will be the validation of the result
-     * @returns if the server didn't responde corectly
-     */
-    const onRequstUpdate = function() {
-        if (request.readyState < 4) {
-            return;
-        }
-        const response = JSON.parse(request.responseText);
-        console.log(request.status + " " + request.statusText);
-        console.log(response);
+  /**
+   * here will be the validation of the result
+   * @returns if the server didn't responde corectly
+   */
+  const onRequstUpdate = function () {
+    if (requestPlace.readyState < 4) {
+      return;
     }
+    const response = JSON.parse(requestPlace.responseText);
+    if (
+      requestPlace.status == 401 ||
+      requestPlace.status == 404 ||
+      requestPlace.status == 403
+    ) {
+      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response);
+    }
+  };
 
-    var request = new XMLHttpRequest();
-    request.open("GET", "../../API/V1/Reservation/" + name);
-    request.onreadystatechange = onRequstUpdate;
-    request.send();
+  var requestPlace = new XMLHttpRequestPlace();
+  requestPlace.open("DELETE", "../../API/V1/Reservation/" + name);
+  requestPlace.onreadystatechange = onRequstUpdate;
+  requestPlace.send();
 }
 
-let data = [
-    {
-        name: "thing",
-        position: {
-            width: 200,
-            height: 100,
-            x: 20,
-            y: 20,
-            etage: 0,
-        },
-        typeThing: "p",
-        description: "wertzui87654 567897654345678987 6t54rertzu8i90",
-        bocked: {
-            host: "james",
-            from: "20.02.2022 20:30",
-            to: "20.02.2022 21:00",
-        }
-    },
-    {
-        name: "hallo",
-        position: {
-            width: 600,
-            height: 400,
-            x: 20,
-            y: 420,
-            etage: 0,
-        },
-        description: "wertzui87 654567897654345678987 6t54rertzu8i90",
-        typeThing: "p",
-        bocked: null,
-    },
-    {
-        name: "thing",
-        position: {
-            width: 200,
-            height: 200,
-            x: 230,
-            y: 20,
-            etage: 0,
-        },
-        description: "wertzui876 '-_'_-' 876t54rertzu8i90",
-        typeThing: "r",
-        bocked: {
-            host: "jeffry",
-            from: "20.02.2022 20:30",
-            to: "20.02.2022 21:00",
-        }
-    },
-];
+function requestPlace() {
+  /**
+   * here will be the validation of the result
+   * @returns if the server didn't responde corectly
+   */
+  const onRequstUpdatePlaces = function () {
+    if (requestPlace.readyState < 4) {
+      return;
+    }
+    if (
+      requestPlace.status == 400 ||
+      requestPlace.status == 401 ||
+      requestPlace.status == 404 ||
+      requestPlace.status == 403
+    ) {
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+    }
+    dataPlaces = JSON.parse(requestPlace.responseText);
+  };
 
-RenderAll();
-// This function makes that every 30 Seconds The Whole screen will get renderd
+  /**
+   * here will be the validation of the result
+   * @returns if the server didn't responde corectly
+   */
+  const onRequstUpdateReservations = function () {
+    if (requestReservation.readyState < 4) {
+      return;
+    }
+    if (
+      requestReservation.status == 400 ||
+      requestReservation.status == 401 ||
+      requestReservation.status == 404 ||
+      requestReservation.status == 403
+    ) {
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+    }
+    dataPlaces = JSON.parse(requestReservation.responseText);
+  };
+
+  let requestPlace = new XMLHttpRequest();
+  requestPlace.open("GET", "../../../../API/V1/Places");
+  requestPlace.onreadystatechange = onRequstUpdatePlaces;
+  requestPlace.send();
+
+  let requestReservation = new XMLHttpRequest();
+  requestReservation.open("GET", "../../../../API/V1/Reservations");
+  requestReservation.onreadystatechange = onRequstUpdateReservations;
+  requestReservation.send();
+}
+
+requestPlace();
+
+let dataPlaces = []; // Alle The Places that can be Reserved
+let dataReservated = []; // All Reservations That Are Set.
+
+// These functions are played every 30 Seconds
+setInterval(requestPlace, 30000);
 setInterval(RenderAll, 30000);

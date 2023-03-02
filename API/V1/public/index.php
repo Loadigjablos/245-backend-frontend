@@ -78,17 +78,20 @@
         return $response;
     });
 
-    function user_validation(){
-        $current_user = validate_token();
-        if ($current_user === false) {
-            error_function(403, "unauthenticated");
+    function user_validation($required_role = null) {
+        $current_user_id = validate_token();
+        $current_user_role = get_user_type($current_user_id);
+        if ($required_role !== null && $current_user_role !== $required_role) {
+            error_function(403, "Access Denied");
         }
-        return $current_user;
-    };
+        return $current_user_id;
+    }
+    
+    
 
     $app->get("/WhoAmI", function (Request $request, Response $response, $args) {
-        $id =  user_validation(); // unotherized pepole will get rejected
-
+// unotherized pepole will get rejected
+        $id = user_validation();
 		$user = get_user_id($id);
 
 		if ($user) {
