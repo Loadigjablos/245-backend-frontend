@@ -47,17 +47,17 @@
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
 
-        $data_time = trim($request_data["data_time"]);
+        $date_time = trim($request_data["date_time"]);
         $place_name = trim($request_data["place_name"]);
         $host = trim($request_data["host"]);
         $description = trim($request_data["description"]);
     
         //The position field cannot be empty and must not exceed 2048 characters
-        if (empty($data_time)) {
-            error_function(400, "The (data_time) field must not be empty.");
+        if (empty($date_time)) {
+            error_function(400, "The (date_time) field must not be empty.");
         } 
-        elseif (strlen($data_time) > 2048) {
-            error_function(400, "The (data_time) field must be less than 2048 characters.");
+        elseif (strlen($date_time) > 2048) {
+            error_function(400, "The (date_time) field must be less than 2048 characters.");
         }
 
         $place_name = "NULL";
@@ -80,7 +80,7 @@
         }        
     
         //checking if everything was good
-        if (create_reservation($data_time, $place_name, $host, $description) === true) {
+        if (create_reservation($date_time, $place_name, $host, $description) === true) {
             message_function(200, "The reservation was successfully created.");
         } 
         else {
@@ -93,7 +93,7 @@
         
         validate_token();
         
-        $place_name = intval($args["place_name"]);
+        $place_name = $args["place_name"];
         
         $result = delete_reservation($place_name);
         

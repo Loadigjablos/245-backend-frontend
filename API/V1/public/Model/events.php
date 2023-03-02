@@ -42,31 +42,52 @@
         }
     }
 
-    function create_reservation($data_time, $place_name, $host, $description) {
+    function create_reservation($date_time, $place_name, $host, $description) {
         global $database;
-
-        $result = $database->query("INSERT INTO `events` (`data_time`,`place_name`, `host`, `description`) VALUES ('$data_time', '$place_name', '$host', '$description');");
-
-		return true;
+    
+        $stmt = $database->prepare("INSERT INTO `events` (`date_time`,`place_name`, `host`, `description`) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $date_time, $place_name, $host, $description);
+        $result = $stmt->execute();
+        
+        if (!$result) {
+            // handle error
+            return false;
+        }
+    
+        return true;
     }
 
-    function delete_reservation($place_name) {
-		global $database;
-
-		$place_name = intval($place_name);
-
-		$result = $database->query("DELETE FROM `events` WHERE place_name = $place_name;");
+    function update_reservation($date_time, $place_name, $host, $description) {
+        global $database;
+    
+        $stmt = $database->prepare("INSERT INTO `events` (`date_time`,`place_name`, `host`, `description`) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $date_time, $place_name, $host, $description);
+        $result = $stmt->execute();
         
-		if (!$result) {
-			return false;
-		}
-		else if ($database->affected_rows == 0) {
-			return null;
-		}
-		else {
-			return true;
-		}
-	}
+        if (!$result) {
+            // handle error
+            return false;
+        }
+    
+        return true;
+    }
+    
+    function delete_reservation($place_name) {
+        global $database;
+    
+        $result = $database->query("DELETE FROM `events` WHERE place_name = '$place_name';");
+            
+        if (!$result) {
+            return false;
+        }
+        else if ($database->affected_rows == 0) {
+            return null;
+        }
+        else {
+            return true;
+        }
+    }
+    
 
 
 ?>
