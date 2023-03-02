@@ -45,12 +45,10 @@
 		return true;
 	}
 
-    function delete_place($id) {
+    function delete_place($place_name) {
 		global $database;
-
-		$id = intval($id);
-
-		$result = $database->query("DELETE FROM `places` WHERE id = $id;");
+		
+		$result = $database->query("DELETE FROM `places` WHERE name = '$place_name';");
         
 		if (!$result) {
 			return false;

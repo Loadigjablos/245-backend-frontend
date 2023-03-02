@@ -119,21 +119,21 @@
         return $response;
     });
 
-    $app->delete("/Place/{id}", function (Request $request, Response $response, $args) {
-        
+    $app->delete("/Place/{place_name}", function (Request $request, Response $response, $args) {
+		
         validate_token();
-        
-        $id = intval($args["id"]);
-        
-        $result = delete_place($id);
-        
-        if (!$result) {
-            error_function(404, "No place found for the ID " . $id . ".");
-        }
-        else {
-            message_function(200, "The place was succsessfuly deleted.");
-        }
-        
-        return $response;
-    });
+		
+		$place_name = $args["place_name"];
+		
+		$result = delete_place($place_name);
+		
+		if (!$result) {
+			error_function(404, "No place found for the Name " . $place_name . ".");
+		}
+		else {
+			message_function(200, "The place was succsessfuly deleted.");
+		}
+		
+		return $response;
+	});
 ?>
