@@ -68,7 +68,6 @@
         return true;
     }
     
-
     function update_reservation($reservation, $date_time, $place_name, $host, $description) {
         global $database;
 
