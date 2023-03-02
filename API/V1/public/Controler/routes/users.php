@@ -3,6 +3,7 @@
     use Psr\Http\Message\ServerRequestInterface as Request;
 
     $app->get("/Users", function (Request $request, Response $response, $args) {
+        $id = user_validation("A");
         validate_token(); // unotherized pepole will get rejected
 
         $users = get_all_users();

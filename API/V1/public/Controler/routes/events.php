@@ -3,6 +3,7 @@
     use Psr\Http\Message\ServerRequestInterface as Request;
 
     $app->get("/Reservations", function (Request $request, Response $response, $args) {
+        //everyone
         validate_token(); // unotherized pepole will get rejected
 
         $reservations = get_all_reservations();
@@ -22,6 +23,7 @@
     
     
     $app->get("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
+        //everyone
         validate_token(); // unotherized pepole will get rejected
 
         $place_name = $args["place_name"];
@@ -42,6 +44,7 @@
     });
 
     $app->post("/Reservation", function (Request $request, Response $response, $args) {
+        //everyone
         validate_token();
 
         $request_body_string = file_get_contents("php://input");
@@ -77,8 +80,23 @@
 
         if (strlen($description) > 2048) {
             error_function(400, "The (host) field must be less than 255 characters.");
-        }        
-    
+        }
+        
+        $serch = get_room($place_name);
+        if(!$serch){
+            error_function(400, "Place Name doesn't exist");
+        }
+        else if (is_string(!$serch)){
+            error_function(400, $serch);
+        }
+
+        $serch = get_user_by_username($place_name);
+        if(!$serch){
+            error_function(400, "name doesn't exist");
+        }
+        else if (is_string(!$serch)){
+            error_function(400, $serch);
+        }
         //checking if everything was good
         if (create_reservation($date_time, $place_name, $host, $description) === true) {
             message_function(200, "The reservation was successfully created.");
@@ -90,7 +108,7 @@
     });
 
     $app->delete("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
-        
+        //everyone
         validate_token();
         
         $place_name = $args["place_name"];

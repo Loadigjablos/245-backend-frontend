@@ -52,7 +52,28 @@
             error_function(404, "not Found");
         }
     }
-
+    
+    function get_user_type($id) {
+        global $database;
+    
+        $result = $database->query("SELECT type FROM users WHERE id = '$id';");
+    
+        if ($result == false) {
+            error_function(500, "Error");
+        } else if ($result !== true) {
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                return $user['type'];
+            } else {
+                error_function(404, "not Found");
+            }
+        } else {
+            error_function(404, "not Found");
+        }
+    }
+    
+    
+    
     function get_user_by_username($name) {
         global $database;
 
