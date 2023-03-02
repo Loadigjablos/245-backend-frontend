@@ -16,11 +16,20 @@
     font-family: 'Graviola-CsBe-light';
     src: url("Graviola/Harbor\ Type\ -\ Graviola-Light.otf");
 }
+@keyframes appear {
+    0%{
+        top: -500px;
+        background-color: rgba(0, 0, 0, 0);
+        border: 10px solid rgba(0, 0, 0, 0);
+    }
+    100%{
+        top: 0px;
+        background-color: #ffffff;
+        border: 10px solid #E50010;
+    }
+}
 .block, div {
     display: block;
-}
-.beneath {
-    
 }
 .underlined {
     font-style: normal;
@@ -98,14 +107,30 @@ main {
 .black-box table {
     border-color: #0A0A32;
 }
-td h2, td button, .black-box h1, td a {
+td h2, td button, .black-box h1, td a, td p {
     color: #FFFFFF;
     background-color: #0A0A32;
 }
 input {
     width: 70%;
 }
-@media (max-width: 1550px) {
+.message-and-error {
+    position: fixed;
+    width: 40%;
+    margin-left: 30%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 10px solid #E50010;
+    top: 0px;
+    animation: appear 0.5s;
+}
+.message-and-error h1, .message-and-error p {
+    color: #E50010;
+}
+.small-input {
+    width: 18%;
+}
+@media (max-width: 1500px) {
     main {
         text-align: left;
         display: block;
@@ -116,6 +141,13 @@ input {
     .left {
         width: 100%;
         margin: 0px;
+    }
+    .message-and-error {
+        position: fixed;
+        width: 100%;
+        margin-left: 0px;
+        border-radius: 0px;
+        left: 0px;
     }
 }
 a:hover, button:hover {

@@ -28,7 +28,7 @@ function requestPost() {
             return;
         }
         type.innerText = request.statusText
-        message.innerText = request.responseText
+        message.innerText = JSON.parse(request.responseText).error;
     }
     var request = new XMLHttpRequest();
     request.open("POST", "../../../../API/V1/Login");
