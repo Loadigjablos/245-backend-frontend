@@ -48,69 +48,65 @@ function RenderAll() {
     `;
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  data.forEach((Element, index) => {
-    if(Element == undefined) {
-        MessageUI("Error", "Data Is Corupted");
-    } else if(Element.position == undefined || Element.data_time == undefined) {
-        MessageUI("Error", "Data Is Incomplete and unable to be displayed");
+  /**
+   * This Algorith is rendering all Places and all the Reservations that ar Set to this place
+   */
+  dataPlaces.forEach((ElementPlace, index) => {
+    if(ElementPlace == undefined) {
+      MessageUI("Error", "Places Data Is Corupted");
     } else {
-        if (JSON.parse(Element.position).etage == etage) {
-            ctx.fillStyle = "#000000";
-            if (Element.bocked == null) {
-              ctx.fillStyle = "#00AF00";
-            } else {
-              ctx.fillStyle = "#AF0000";
+      let AllReservationsFromThisPlace = [];
+
+      // Checks if there is a Reservation for this Place
+      dataReservated.forEach((ElementReservation) => {
+        if(ElementReservation == undefined) {
+          MessageUI("Error", "Reservation Data Is Corupted");
+        } else if(ElementReservation.from_date == undefined || ElementReservation.to_date == undefined || ElementReservation.host == undefined) {
+          MessageUI("Error", "Data Is Incomplete");
+        } else {
+          // Reservations For this place are added to array to list them later up
+          if (ElementReservation.place_name == ElementPlace.name) {
+            const reservation = {
+              from: ElementReservation.from_date,
+              to: ElementReservation.to_date,
+              host: ElementReservation.host,
+              description: ElementReservation.description
             }
-            ctx.fillRect(
-              JSON.parse(Element.position).x,
-              JSON.parse(Element.position).y,
-              JSON.parse(Element.position).width,
-              JSON.parse(Element.position).height
-            );
-      
-            // WHITE
-            ctx.fillStyle = "#FFFFFF";
-      
-            let type = "";
-            if ((Element.type == "r")) {
-              type = "Raum";
-            } else if ((Element.type == "p")) {
-              type = "Parkplatz";
-            } else {
-              type = "UnIdentified Thing";
-            }
-            ctx.fillText(
-              index + ": " + Element.place_name + ", " + type,
-              JSON.parse(Element.position).x +
-              JSON.parse(Element.position).width / 2 -
-                (index + " :" + Element.place_name + ", " + type).length * 2,
-                JSON.parse(Element.position).y + JSON.parse(Element.position).height / 2 - 10
-            );
-            if (Element.data_time != null) {
-              ctx.fillText(
-                "Host: " + JSON.parse(Element.data_time).host,
-                JSON.parse(Element.position).x +
-                JSON.parse(Element.position).width / 2 -
-                  ("Host: " + JSON.parse(Element.data_time).host).length * 2,
-                  JSON.parse(Element.position).y + JSON.parse(Element.position).height / 2
-              );
-              ctx.fillText(
-                "From: " + JSON.parse(Element.data_time).from,
-                JSON.parse(Element.position).x +
-                JSON.parse(Element.position).width / 2 -
-                  ("From: " + JSON.parse(Element.data_time).from).length * 2,
-                  JSON.parse(Element.position).y + JSON.parse(Element.position).height / 2 + 10
-              );
-              ctx.fillText(
-                "To:" + JSON.parse(Element.data_time).to,
-                JSON.parse(Element.position).x +
-                JSON.parse(Element.position).width / 2 -
-                  ("To:" + JSON.parse(Element.data_time).to).length * 2,
-                  JSON.parse(Element.position).y + JSON.parse(Element.position).height / 2 + 20
-              );
-            }
+            AllReservationsFromThisPlace.push(reservation);
           }
-          if (Element.data_time == null) {
+        }
+      });
+
+      const x = parseInt(JSON.parse(ElementPlace.position).x);
+      const y = parseInt(JSON.parse(ElementPlace.position).y);
+      const width = parseInt(JSON.parse(ElementPlace.position).width);
+      const height = parseInt(JSON.parse(ElementPlace.position).height);
+
+      ctx.fillStyle = "#000000";
+      if (AllReservationsFromThisPlace == null) {
+        ctx.fillStyle = "#00AF00";
+      } else {
+        ctx.fillStyle = "#AF0000";
+      }
+
+      ctx.fillRect(x, y, width, height);
+
+      let type = "";
+      if ((Element.type == "r")) {
+        type = "Raum";
+      } else if ((Element.type == "p")) {
+        type = "Parkplatz";
+      } else {
+        type = "UnIdentified Thing";
+      }
+      /*
+            ctx.fillText(
+              index + ": " + Element.name + ", " + type,
+              x + (width / 2) - (index + " :" + Element.name + ", " + type).length * 2,
+                y + (height / 2) - 10
+            );
+
+            if (Element.data_time == null) {
             var bocked = "nicht besetzt";
             tabelReservations.innerHTML += `
                   <tr>
@@ -135,6 +131,7 @@ function RenderAll() {
                   </tr>
                   `;
           }
+    */
     }
   });
 }
@@ -149,54 +146,80 @@ function reservationDelete(name) {
    * @returns if the server didn't responde corectly
    */
   const onRequstUpdate = function () {
-    if (request.readyState < 4) {
+    if (requestPlace.readyState < 4) {
       return;
     }
-    const response = JSON.parse(request.responseText);
+    const response = JSON.parse(requestPlace.responseText);
     if (
-      request.status == 401 ||
-      request.status == 404 ||
-      request.status == 403
+      requestPlace.status == 401 ||
+      requestPlace.status == 404 ||
+      requestPlace.status == 403
     ) {
       MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response);
     }
   };
 
-  var request = new XMLHttpRequest();
-  request.open("GET", "../../API/V1/Reservation/" + name);
-  request.onreadystatechange = onRequstUpdate;
-  request.send();
+  var requestPlace = new XMLHttpRequestPlace();
+  requestPlace.open("DELETE", "../../API/V1/Reservation/" + name);
+  requestPlace.onreadystatechange = onRequstUpdate;
+  requestPlace.send();
 }
 
-function request() {
+function requestPlace() {
   /**
    * here will be the validation of the result
    * @returns if the server didn't responde corectly
    */
-  const onRequstUpdate = function () {
-    if (request.readyState < 4) {
+  const onRequstUpdatePlaces = function () {
+    if (requestPlace.readyState < 4) {
       return;
     }
-    data = JSON.parse(request.responseText);
     if (
-      request.status == 401 ||
-      request.status == 404 ||
-      request.status == 403
+      requestPlace.status == 400 ||
+      requestPlace.status == 401 ||
+      requestPlace.status == 404 ||
+      requestPlace.status == 403
     ) {
       MessageUI("Error", "Daten Konnten Nicht Geholt werden");
     }
-    RenderAll();
+    dataPlaces = JSON.parse(requestPlace.responseText);
   };
 
-  let request = new XMLHttpRequest();
-  request.open("GET", "../../../../API/V1/Reservations");
-  request.onreadystatechange = onRequstUpdate;
-  request.send();
+  /**
+   * here will be the validation of the result
+   * @returns if the server didn't responde corectly
+   */
+  const onRequstUpdateReservations = function () {
+    if (requestReservation.readyState < 4) {
+      return;
+    }
+    if (
+      requestReservation.status == 400 ||
+      requestReservation.status == 401 ||
+      requestReservation.status == 404 ||
+      requestReservation.status == 403
+    ) {
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+    }
+    dataPlaces = JSON.parse(requestReservation.responseText);
+  };
+
+  let requestPlace = new XMLHttpRequest();
+  requestPlace.open("GET", "../../../../API/V1/Places");
+  requestPlace.onreadystatechange = onRequstUpdatePlaces;
+  requestPlace.send();
+
+  let requestReservation = new XMLHttpRequest();
+  requestReservation.open("GET", "../../../../API/V1/Reservations");
+  requestReservation.onreadystatechange = onRequstUpdateReservations;
+  requestReservation.send();
 }
 
-request();
+requestPlace();
 
-let data = [];
+let dataPlaces = []; // Alle The Places that can be Reserved
+let dataReservated = []; // All Reservations That Are Set.
 
-// This function makes that every 30 Seconds New Data Will get requested
-setInterval(request, 30000);
+// These functions are played every 30 Seconds
+setInterval(requestPlace, 30000);
+setInterval(RenderAll, 30000);
