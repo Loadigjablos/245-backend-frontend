@@ -44,7 +44,6 @@ function RenderAll() {
         <th>Name</th>
         <th>Type</th>
         <th>Löschen</th>
-        <th>Bearbeiten</th>
     </tr>
   `;
 
@@ -95,7 +94,6 @@ function RenderAll() {
                       <td>${Element.name}</td>
                       <td>${type}</td>
                       <td><button onclick="placeDelete('${Element.name}')">Löschen</button></td>
-                      <td><a href="place-edit.html#${Element.name}">Bearbeiten</a></td>
                   </tr>
                   `;
     }
@@ -125,7 +123,6 @@ function placeDelete(name) {
     if (request.readyState < 4) {
       return;
     }
-    console.log(request.responseText);
     const response = JSON.parse(request.responseText);
     if (
         request.status == 400 ||
@@ -135,6 +132,7 @@ function placeDelete(name) {
     ) {
       MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
     }
+    MessageUI("Succes", "Erfolgreich Gelöscht");
     request();
   };
 
@@ -160,7 +158,7 @@ function request() {
         request.status == 404 ||
         request.status == 403
     ) {
-      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden oder Es Gibt keine");
     }
     RenderAll();
   };
@@ -211,7 +209,7 @@ function newObject() {
         request.status == 404 ||
         request.status == 403
       ) {
-        MessageUI("Error", "Daten Konnten Nicht Gespeichert werden");
+        MessageUI("Error", "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine");
       }
       data = JSON.parse(request.responseText);
       RenderAll();
