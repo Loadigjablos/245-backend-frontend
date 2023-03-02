@@ -33,7 +33,7 @@
 		return true;
     }
 
-    function update_place($place_name, $position, $name, $type) {
+    function update_place($place_name, $name, $position, $type) {
 		global $database;
 
 		$result = $database->query("UPDATE `places` SET position = '$position', name = '$name', type = '$type' WHERE name = '$place_name';");
@@ -44,6 +44,7 @@
 		
 		return true;
 	}
+
 	function get_all_places() {
         global $database;
 

@@ -42,13 +42,24 @@
         }
     }
 
-    function create_reservation($date_time, $place_name, $host, $description) {
+    function create_reservation($from_date, $to_date, $place_name, $host, $description) {
         global $database;
     
-        $stmt = $database->prepare("INSERT INTO `events` (`date_time`,`place_name`, `host`, `description`) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $date_time, $place_name, $host, $description);
-        $result = $stmt->execute();
-        
+        // Check if place_name already exists
+        $result = $database->prepare("SELECT COUNT(*) FROM `events` WHERE `place_name` = ? AND `to_date` > ?");
+        $result->bind_param("ss", $place_name, $from_date);
+        $result->execute();
+        $result = $result->get_result()->fetch_row()[0];
+        if ($result > 0) {
+            // place_name already exists, return false
+            error_function(400, "It's look like someone booked ( " . $place_name . " ) bevor you.");        
+        }
+    
+        // Insert new reservation
+        $result = $database->prepare("INSERT INTO `events` (`from_date`, `to_date`, `place_name`, `host`, `description`) VALUES (?, ?, ?, ?, ?)");
+        $result->bind_param("sssss", $from_date, $to_date, $place_name, $host, $description);
+        $result = $result->execute();
+    
         if (!$result) {
             // handle error
             return false;
@@ -56,19 +67,17 @@
     
         return true;
     }
-
-    function update_reservation($date_time, $place_name, $host, $description) {
-        global $database;
     
-        $stmt = $database->prepare("INSERT INTO `events` (`date_time`,`place_name`, `host`, `description`) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $date_time, $place_name, $host, $description);
-        $result = $stmt->execute();
-        
+
+    function update_reservation($reservation, $date_time, $place_name, $host, $description) {
+        global $database;
+
+        $result = $database->query("UPDATE `events` SET date_time = '$date_time', place_name = '$place_name', host = '$host', description = '$description' WHERE place_name = '$reservation';");
+
         if (!$result) {
-            // handle error
             return false;
         }
-    
+        
         return true;
     }
     

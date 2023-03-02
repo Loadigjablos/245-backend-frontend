@@ -123,19 +123,19 @@
         elseif (!ctype_upper($type)) {
             error_function(400, "The (type) field must be an uppercase alphabetic character.");
         } 
-        elseif ($type !== 'R' && $type !== 'P') {
+        if (isset($type) && $type !== 'R' && $type !== 'P') {
             error_function(400, "The (type) field must be either 'R' or 'P'.");
         }
-		
-		if (update_place($place_name, $position, $name, $type)) {
-			message_function(200 ,"The place data were successfully updated");
-		}
-		else {
-			error_function(500, "An error occurred while saving the place data.");
-		}
-		
-		return $response;
-	});
+    
+        if (update_place($place_name, $position, $name, $type)) {
+            message_function(200 ,"The place data were successfully updated");
+        }
+        else {
+            error_function(500, "An error occurred while saving the place data.");
+        }
+    
+        return $response;
+    });
 
     $app->delete("/Place/{place_name}", function (Request $request, Response $response, $args) {
 		

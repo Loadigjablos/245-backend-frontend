@@ -47,14 +47,15 @@
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
 
-        $date_time = trim($request_data["date_time"]);
+        $from_date = trim($request_data["from_date"]);
+        $to_date = trim($request_data["to_date"]);
         $place_name = trim($request_data["place_name"]);
         $host = trim($request_data["host"]);
         $description = trim($request_data["description"]);
     
         //The position field cannot be empty and must not exceed 2048 characters
-        if (empty($date_time)) {
-            error_function(400, "The (date_time) field must not be empty.");
+        if (empty($to_date)) {
+            error_function(400, "The (to date) field must not be empty.");
         } 
         elseif (strlen($date_time) > 2048) {
             error_function(400, "The (date_time) field must be less than 2048 characters.");
@@ -77,16 +78,53 @@
 
         if (strlen($description) > 2048) {
             error_function(400, "The (host) field must be less than 255 characters.");
-        }        
+        }   
+        
+        
+    //check if from_date is before to_date
+        if (strtotime($from_date) >= strtotime($to_date)) {
+            error_function(400, "The (from date) field must be before the (to date) field.");
+        }
+
     
         //checking if everything was good
-        if (create_reservation($date_time, $place_name, $host, $description) === true) {
+        if (create_reservation($from_date, $to_date, $place_name, $host, $description) === true) {
             message_function(200, "The reservation was successfully created.");
         } 
         else {
             error_function(500, "An error occurred while saving the reservation.");
         }
         return $response;        
+    });
+
+    $app->put("/Reservation/{id}", function (Request $request, Response $response, $args) {
+
+        validate_token();
+		
+		$place_name = $args["place_name"];
+		
+		$reservation = get_reservation_by_name($place_name);
+		
+		if (!$reservation) {
+			error_function(404, "No place found for the name ( " . $place_name . " ).");
+		}
+		
+		$request_body_string = file_get_contents("php://input");
+		
+        $date_time = trim($request_data["date_time"]);
+        $place_name = trim($request_data["place_name"]);
+        $host = trim($request_data["host"]);
+        $description = trim($request_data["description"]);
+
+
+        if (update_reservation($reservation, $date_time, $place_name, $host, $description)) {
+            message_function(200 ,"The reservation data were successfully updated");
+        }
+        else {
+            error_function(500, "An error occurred while saving the reservation data.");
+        }
+    
+        return $response;
     });
 
     $app->delete("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
