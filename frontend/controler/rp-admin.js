@@ -54,7 +54,7 @@ function RenderAll() {
     ctx.fillRect(0, i, 10, 1);
   }
   ctx.fillRect(20, CANVAS_HEIGHT - 20, 50, 5);
-  ctx.fillText("50Pixel = 1Meter", 20, CANVAS_HEIGHT - 25);
+  ctx.fillText("50Pixel = 4Meter", 20, CANVAS_HEIGHT - 25);
 
   data.forEach((Element, index) => {
     if(Element == undefined) {
@@ -100,7 +100,7 @@ function RenderAll() {
     });
 
     ctx.fillStyle = "#0000AA";
-        
+
     ctx.fillRect(
         positionX.value,
         positionY.value,
@@ -131,9 +131,10 @@ function placeDelete(name) {
         request.status == 403
     ) {
       MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
+    } else {
+      MessageUI("Succes", "Erfolgreich Gelöscht");
+      request();
     }
-    MessageUI("Succes", "Erfolgreich Gelöscht");
-    request();
   };
 
   var request = new XMLHttpRequest();
@@ -211,10 +212,11 @@ function newObject() {
       ) {
         MessageUI("Error", "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine");
       }
+      console.log(request.responseText, request.status);
       data = JSON.parse(request.responseText);
       RenderAll();
     };
-  
+
     let request = new XMLHttpRequest();
     request.open("POST", "../../../../API/V1/Place");
     request.onreadystatechange = onRequstUpdate;

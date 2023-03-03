@@ -37,112 +37,135 @@ const CANVAS_HEIGHT = (canvas.height = 900);
 
 function RenderAll() {
   tabelReservations.innerHTML = `
-    <tr>
-        <th>Name</th>
-        <th>Besetzt?</th>
-        <th>Beschreibung</th>
-        <th>Löschen</th>
-        <th>Bearbeiten</th>
-        <th>Reservieren</th>
-    </tr>
+  <tr>
+    <th>Name</th>
+    <th>Besetztungen</th>
+    <th>Reservieren</th>
+  </tr>
     `;
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.fillStyle = "#000000";
 
   /**
    * This Algorith is rendering all Places and all the Reservations that ar Set to this place
    */
   dataPlaces.forEach((ElementPlace, index) => {
-    if(ElementPlace == undefined) {
+    if (ElementPlace == undefined) {
       MessageUI("Error", "Places Data Is Corupted");
     } else {
       let AllReservationsFromThisPlace = [];
 
       // Checks if there is a Reservation for this Place
       dataReservated.forEach((ElementReservation) => {
-        if(ElementReservation == undefined) {
+        if (ElementReservation == undefined) {
           MessageUI("Error", "Reservation Data Is Corupted");
-        } else if(ElementReservation.from_date == undefined || ElementReservation.to_date == undefined || ElementReservation.host == undefined) {
+        } else if (
+          ElementReservation.from_date == undefined ||
+          ElementReservation.to_date == undefined ||
+          ElementReservation.host == undefined
+        ) {
           MessageUI("Error", "Data Is Incomplete");
         } else {
           // Reservations For this place are added to array to list them later up
           if (ElementReservation.place_name == ElementPlace.name) {
             const reservation = {
+              reservation_id: ElementReservation.id,
               from: ElementReservation.from_date,
               to: ElementReservation.to_date,
               host: ElementReservation.host,
-              description: ElementReservation.description
-            }
+              description: ElementReservation.description,
+            };
             AllReservationsFromThisPlace.push(reservation);
           }
         }
       });
 
+      // Checks If the type is a Room Or a Parkingspace
       let type = "";
-      if ((Element.type == "r")) {
+      if (ElementPlace.type == "R") {
         type = "Raum";
-      } else if ((Element.type == "p")) {
+      } else if (ElementPlace.type == "P") {
         type = "Parkplatz";
       } else {
         type = "UnIdentified Thing";
       }
-      
-      if(ElementPlace.etage === etage) {
-        const x = parseInt(JSON.parse(ElementPlace.position).x);
-        const y = parseInt(JSON.parse(ElementPlace.position).y);
-        const width = parseInt(JSON.parse(ElementPlace.position).width);
-        const height = parseInt(JSON.parse(ElementPlace.position).height);
+
+      // When the UI is in the exact Etage it will Render it On Screen
+      if (JSON.parse(ElementPlace.position).etage === etage) {
+        const X = parseInt(JSON.parse(ElementPlace.position).x);
+        const Y = parseInt(JSON.parse(ElementPlace.position).y);
+        const WIDTH = parseInt(JSON.parse(ElementPlace.position).width);
+        const HEIGHT = parseInt(JSON.parse(ElementPlace.position).height);
 
         ctx.fillStyle = "#000000";
-        if (AllReservationsFromThisPlace == null) {
+        if (AllReservationsFromThisPlace.length < 1) {
           ctx.fillStyle = "#00AF00";
         } else {
           ctx.fillStyle = "#AF0000";
         }
 
-        ctx.fillRect(x, y, width, height);
-      }
-      /*
-            ctx.fillText(
-              index + ": " + Element.name + ", " + type,
-              x + (width / 2) - (index + " :" + Element.name + ", " + type).length * 2,
-                y + (height / 2) - 10
-            );
+        ctx.fillRect(X, Y, WIDTH, HEIGHT);
 
-            if (Element.data_time == null) {
-            var bocked = "nicht besetzt";
-            tabelReservations.innerHTML += `
-                  <tr>
-                      <td>${Element.place_name}</td>
-                      <td>${bocked}</td>
-                      <td>${Element.description}</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td><a href="reservation.html#${Element.place_name}">Reservieren</a></td>
-                  </tr>
-                  `;
-          } else {
-            var bocked = "besetzt";
-            tabelReservations.innerHTML += `
-                  <tr>
-                      <td>${Element.place_name}</td>
-                      <td>${bocked}</td>
-                      <td>${Element.description}</td>
-                      <td><button onclick="reservationDelete('${Element.place_name}')">Löschen</button></td>
-                      <td><a href="reservation-edit.html#${Element.place_name}">Editieren</a></td>
-                      <td>-</td>
-                  </tr>
-                  `;
-          }
-    */
+        ctx.fillStyle = "#FFFFFF";
+
+        ctx.fillText(index + ": " + ElementPlace.name + ", " + type,
+          X + (WIDTH / 2) - (index + " :" + ElementPlace.name + ", " + type).length * 2,
+          Y + (HEIGHT / 2)
+        );
+      }
+
+      // New Row in the table of the html document
+      const NEW_ROW = document.createElement("tr");
+
+      const NAME = document.createElement("td");
+      const CASTS = document.createElement("td");
+      const RESERVE = document.createElement("td");
+
+      NAME.innerText = ElementPlace.name;
+
+      // Lists all Reservations to the Casts field
+      AllReservationsFromThisPlace.forEach((reservation) => {
+        const NEW_RESERVATION = document.createElement("li");
+
+        const DELETE_EDIT = document.createElement("p");
+        const INFORMATION = document.createElement("p");
+
+        DELETE_EDIT.innerHTML = "<button onclick='reservationDelete(" + reservation.reservation_id + ")'>Löschen</button>" + "<a href='reservation-edit.html#" + reservation.reservation_id + "'>Editieren</>"
+
+        INFORMATION.innerText =
+          "Von: " +
+          reservation.from +
+          " Bis: " +
+          reservation.to +
+          "\n Host/Reservierender: " +
+          reservation.host +
+          " Wegen: " +
+          reservation.description;
+
+        NEW_RESERVATION.appendChild(INFORMATION);
+        NEW_RESERVATION.appendChild(DELETE_EDIT);
+
+        CASTS.appendChild(NEW_RESERVATION);
+      });
+
+      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.id + "'>Reservation machen</>";
+
+      NEW_ROW.appendChild(NAME);
+      NEW_ROW.appendChild(CASTS);
+      NEW_ROW.appendChild(RESERVE);
+
+      tabelReservations.appendChild(NEW_ROW);
+
     }
   });
 }
 
+
 /**
- *
- * @param {*} name
+ * 
+ * @param {*} id
  */
-function reservationDelete(name) {
+function reservationDelete(id) {
   /**
    * here will be the validation of the result
    * @returns if the server didn't responde corectly
@@ -182,9 +205,14 @@ function requestPlace() {
       requestPlace.status == 404 ||
       requestPlace.status == 403
     ) {
-      MessageUI("Error", "Daten Konnten Nicht Geholt werden oder Es Gibt keine");
+      MessageUI(
+        "Error",
+        "Daten Konnten Nicht Geholt werden oder Es Gibt keine"
+      );
+    } else {
+      dataPlaces = JSON.parse(requestPlace.responseText);
+      RenderAll();
     }
-    dataPlaces = JSON.parse(requestPlace.responseText);
   };
 
   /**
@@ -201,9 +229,14 @@ function requestPlace() {
       requestReservation.status == 404 ||
       requestReservation.status == 403
     ) {
-      MessageUI("Error", "Daten Konnten Nicht Geholt werden oder Es Gibt keine");
+      MessageUI(
+        "Error",
+        "Daten Konnten Nicht Geholt werden oder Es Gibt keine"
+      );
+    } else {
+      dataReservated = JSON.parse(requestReservation.responseText);
+      RenderAll();
     }
-    dataPlaces = JSON.parse(requestReservation.responseText);
   };
 
   let requestPlace = new XMLHttpRequest();
@@ -217,11 +250,10 @@ function requestPlace() {
   requestReservation.send();
 }
 
-requestPlace();
-
 let dataPlaces = []; // Alle The Places that can be Reserved
 let dataReservated = []; // All Reservations That Are Set.
 
-// These functions are played every 30 Seconds
+// this function is played every 30 Seconds
 setInterval(requestPlace, 30000);
-setInterval(RenderAll, 30000);
+
+requestPlace();
