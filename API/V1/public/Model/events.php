@@ -82,38 +82,6 @@
             // handle error
             return false;
         }
-    
-        // Generate .ics file for Outlook export
-        $start_time = strtotime($from_date);
-        $end_time = strtotime($to_date);
-        $now_time = time();
-        $filename = 'reservation_' . $now_time . '.ics';
-        $ics_content = "BEGIN:VCALENDAR
-                        VERSION:2.0
-                        BEGIN:VEVENT
-                        DTSTART:" . gmdate('Ymd\THis\Z', $start_time) . "
-                        DTEND:" . gmdate('Ymd\THis\Z', $end_time) . "
-                        SUMMARY:Reservation for $place_name
-                        DESCRIPTION:$description
-                        LOCATION:$place_name
-                        END:VEVENT
-                        END:VCALENDAR";
-    
-        // Send email with .ics file attachment
-        $to = "morhaf.mouayad@gmail.com";
-        $subject = 'Reservation Confirmation';
-        $message = 'Your reservation for ' . $place_name . ' from ' . $from_date . ' to ' . $to_date . ' has been confirmed.';
-        $headers = 'From: morhaf.mouayad@gmail.com' . "\r\n" .
-            'Reply-To: morhaf.mouayad@gmail.com' . "\r\n" .
-            'Content-Type: text/calendar; method=REQUEST' . "\r\n" .
-            'charset="UTF-8"'."\r\n" .
-            'Content-Disposition: attachment; filename=' . $filename;
-    
-        $mail_sent = mail($to, $subject, $message, $headers, $ics_content);
-    
-        if (!$mail_sent) {
-            error_function(500, "Failed to send email confirmation.");
-        }
         
         return true;
     }
