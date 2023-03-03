@@ -170,16 +170,16 @@
 		return $response;
 	});
 
-    $app->delete("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
+    $app->delete("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
         
-        $place_name = $args["place_name"];
+        $id = $args["id"];
         
-        $result = delete_reservation($place_name);
+        $result = delete_reservation($id);
         
         if (!$result) {
-            error_function(404, "No reservation found for the place_name " . $place_name . ".");
+            error_function(404, "No reservation found for the id " . $id . ".");
         }
         else {
             message_function(200, "The reservation was succsessfuly deleted.");
