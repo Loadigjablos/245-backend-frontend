@@ -152,6 +152,19 @@ table button, table a {
         margin-left: 0px;
         border-radius: 0px;
         left: 0px;
+        border: 5px solid #E50010;
+    }
+    img {
+        width: 50%;
+    }
+    * {
+        font-size: 15px;
+    }
+    h1, h2, h3 {
+        font-size: 20px;
+    }
+    input {
+        width: 80%;
     }
 }
 a:hover, button:hover {

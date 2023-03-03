@@ -123,14 +123,13 @@ function placeDelete(name) {
     if (request.readyState < 4) {
       return;
     }
-    const response = JSON.parse(request.responseText);
     if (
         request.status == 400 ||
         request.status == 401 ||
         request.status == 404 ||
         request.status == 403
     ) {
-      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
+      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + JSON.parse(request.responseText).error);
     } else {
       MessageUI("Succes", "Erfolgreich Gelöscht");
       request();
@@ -210,11 +209,11 @@ function newObject() {
         request.status == 404 ||
         request.status == 403
       ) {
-        MessageUI("Error", "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine");
+        MessageUI("Error", "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine: " + JSON.parse(request.responseText).error);
+      } else {
+        data = JSON.parse(request.responseText);
+        RenderAll();
       }
-      console.log(request.responseText, request.status);
-      data = JSON.parse(request.responseText);
-      RenderAll();
     };
 
     let request = new XMLHttpRequest();

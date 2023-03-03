@@ -29,8 +29,8 @@ function requesting() {
             namePlace.innerText = "Admin: " + response.name;
         } else if(response.type == "S") {
             namePlace.innerText = "Sekretariat: " + response.name;
-        } else if(response.type == "B") {
-            namePlace.innerText = "Benutzer: " + response.name;
+        } else if(response.type == "D") {
+            namePlace.innerText = "Dozent: " + response.name;
         }
     }
 

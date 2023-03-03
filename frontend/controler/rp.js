@@ -180,12 +180,15 @@ function reservationDelete(id) {
       requestPlace.status == 404 ||
       requestPlace.status == 403
     ) {
-      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response);
+      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
+    } else {
+      MessageUI("Success", "Succesfuly Deleted The Reservation");
+      requestPlace();
     }
   };
 
-  var requestPlace = new XMLHttpRequestPlace();
-  requestPlace.open("DELETE", "../../API/V1/Reservation/" + name);
+  var requestPlace = new XMLHttpRequest();
+  requestPlace.open("DELETE", "../../API/V1/Reservation/" + id);
   requestPlace.onreadystatechange = onRequstUpdate;
   requestPlace.send();
 }
