@@ -13,8 +13,10 @@ function request() {
         }
         if (request.status == 401 || request.status == 404 || request.status == 403) {
             MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+        } else {
+            data = JSON.parse(request.responseText);
+            RenderAll();
         }
-        data = JSON.parse(request.responseText);
     }
 
     let request = new XMLHttpRequest();
@@ -23,25 +25,29 @@ function request() {
     request.send();
 }
 
+function RenderAll() {
+    data.forEach((Element) => {
+        tabelReservations.innerHTML =`
+        <tr>
+            <th>Name</th>
+            <th>Datum</th>
+        </tr>
+        `;
+
+        if (Element !== null) {
+            tabelReservations.innerHTML += `
+                <tr>
+                    <td>${Element.place_name}</td>
+                    <td>${ "Von: " + Element.from_date + " Bis: " + Element.to_date }</td>
+                </tr>
+            `;
+        } else {
+            MessageUI("Error", "Beschädigte Daten Wurden Erhalten");
+        }
+    });
+}
+
 request();
 
-data.forEach((Element) => {
-    
-    if (Element.bocked !== null) {
-        if (Element.typeThing == "r") {
-            tabelReservations.innerHTML += `
-            <tr>
-                <td>${"Raum: " + Element.name}</td>
-                <td>${Element.bocked.from + " Bis " + Element.bocked.to}</td>
-            </tr>
-            `;
-        } else if(Element.typeThing == "p") {
-            tabelReservations.innerHTML += `
-            <tr>
-                <td>${"Parkplatz: " + Element.name}</td>
-                <td>${Element.bocked.from + " Bis " + Element.bocked.to}</td>
-            </tr>
-            `;
-        }
-    }
-});
+// this function is played every 60 Seconds
+setInterval(request, 60000);
