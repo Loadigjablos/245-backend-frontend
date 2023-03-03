@@ -27,23 +27,33 @@
 
     function create_place($position, $name, $type) {
         global $database;
+    
+        // check if a place with the same name already exists
+        $existing_place = $database->query("SELECT * FROM `places` WHERE `name` = '$name'")->fetch_assoc();
+        if ($existing_place) {
+            // handle error
+            error_function(400, "A place with the name '$name' already exists.");
+            return false;
+        }
 
+        // check if a place with the same position already exists
+        $existing_place = $database->query("SELECT * FROM `places` WHERE `position` = '$position'")->fetch_assoc();
+        if ($existing_place) {
+            // handle error
+            error_function(400, "A place with the position '$position' already exists.");
+            return false;
+        }
+    
         $result = $database->query("INSERT INTO `places` (`position`,`name`, `type`) VALUES ('$position', '$name', '$type');");
-
-		return true;
-    }
-
-    function update_place($place_name, $name, $position, $type) {
-		global $database;
-
-		$result = $database->query("UPDATE `places` SET position = '$position', name = '$name', type = '$type' WHERE name = '$place_name';");
-
-		if (!$result) {
-			return false;
-		}
-		
-		return true;
-	}
+    
+        if (!$result) {
+            // handle error
+            error_function(400, "An error occurred while creating the place.");
+            return false;
+        }
+    
+        return true;
+    }    
 
 	function get_all_places() {
         global $database;

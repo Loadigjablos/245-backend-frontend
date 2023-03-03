@@ -95,33 +95,80 @@
 
     $app->put("/Reservation/{id}", function (Request $request, Response $response, $args) {
 
+		$id = user_validation("A");
         validate_token();
 		
-		$place_name = $args["place_name"];
+		$id = $args["id"];
 		
-		$reservation = get_reservation_by_name($place_name);
+		$reservation = get_reservation_by_id($id);
 		
 		if (!$reservation) {
-			error_function(404, "No place found for the name ( " . $place_name . " ).");
+			error_function(404, "No reservation found for the id ( " . $id . " ).");
 		}
 		
 		$request_body_string = file_get_contents("php://input");
 		
-        $date_time = trim($request_data["date_time"]);
-        $place_name = trim($request_data["place_name"]);
-        $host = trim($request_data["host"]);
-        $description = trim($request_data["description"]);
+		$request_data = json_decode($request_body_string, true);
 
+		if (isset($request_data["from_date"])) {
+			$from_date = strip_tags(addslashes($request_data["from_date"]));
+		
+			if (strlen($from_date) > 255) {
+				error_function(400, "The from_date is too long. Please enter less than 255 letters.");
+			}
+		
+			$reservation["from_date"] = $from_date;
+		}
 
-        if (update_reservation($reservation, $date_time, $place_name, $host, $description)) {
-            message_function(200 ,"The reservation data were successfully updated");
-        }
-        else {
-            error_function(500, "An error occurred while saving the reservation data.");
-        }
-    
-        return $response;
-    });
+        if (isset($request_data["to_date"])) {
+			$to_date = strip_tags(addslashes($request_data["to_date"]));
+		
+			if (strlen($to_date) > 500) {
+				error_function(400, "The to_date is too long. Please enter less than 500 letters.");
+			}
+		
+			$reservation["to_date"] = $to_date;
+		}
+
+        if (isset($request_data["place_name"])) {
+			$place_name = strip_tags(addslashes($request_data["place_name"]));
+		
+			if (strlen($place_name) > 1000) {
+				error_funciton(400, "The place_name is too long. Please enter less than 1000 letters.");
+			}
+		
+			$reservation["place_name"] = $place_name;
+		}
+
+        if (isset($request_data["host"])) {
+			$host = strip_tags(addslashes($request_data["host"]));
+		
+			if (strlen($host) > 1000) {
+				error_funciton(400, "The host is too long. Please enter less than 1000 letters.");
+			}
+		
+			$reservation["host"] = $host;
+		}
+
+        if (isset($request_data["description"])) {
+			$description = strip_tags(addslashes($request_data["description"]));
+		
+			if (strlen($description) > 1000) {
+				error_function(400, "The description is too long. Please enter less than 1000 letters.");
+			}
+		
+			$reservation["description"] = $description;
+		}
+		
+		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"])) {
+			message_function(200, "The reservation data were successfully updated");
+		}
+		else {
+			error_function(500, "An error occurred while saving the reservation data.");
+		}
+		
+		return $response;
+	});
 
     $app->delete("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
         //everyone

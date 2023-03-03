@@ -151,4 +151,64 @@
             error_function(404, "not Found");
         }
     }
+
+    function create_user($name, $email, $password, $type, $add_date) {
+        global $database;
+
+        $existing_place = $database->query("SELECT * FROM `users` WHERE `name` = '$name'")->fetch_assoc();
+        if ($existing_place) {
+            // handle error
+            error_function(400, "A place with the name '$name' already exists.");
+            return false;
+        }
+
+        $result = $database->query("INSERT INTO `users` (`name`,`email`, `password_hash`, `type`, `add_date`) VALUES ('$name', '$email', '$password', '$type', '$add_date');");
+
+        if ($result) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function update_user($user_id, $name, $email, $password, $type, $add_date) {
+		global $database;
+
+		$result = $database->query("UPDATE `users` SET name = '$name', email = '$email', password_hash = '$password', type = '$type', add_date = '$add_date' WHERE id = '$user_id';");
+
+		if (!$result) {
+			return false;
+		}
+		
+		return true;
+	}
+
+    function update_product($product_id, $name, $active, $sku, $category_id, $image, $description, $price, $stock) {
+		global $database;
+
+		$result = $database->query("UPDATE `product` SET name = '$name', active = $active, sku = '$sku', category_id = $category_id, image = '$image', description = '$description', price = $price, stock = $stock WHERE product_id = $product_id");
+
+		if (!$result) {
+			return false;
+		}
+		
+		return true;
+	}
+
+    function delete_user($name) {
+		global $database;
+		
+		$result = $database->query("DELETE FROM `users` WHERE name = '$name';");
+        
+		if (!$result) {
+			return false;
+		}
+		else if ($database->affected_rows == 0) {
+			return null;
+		}
+		else {
+			return true;
+		}
+	}
 ?>

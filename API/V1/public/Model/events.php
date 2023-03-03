@@ -20,6 +20,24 @@
         }
     }
 
+    function get_reservation_by_id($id) {
+        global $database;
+
+        $result = $database->query("SELECT * FROM events WHERE id = '$id';");
+
+        if ($result == false) {
+            error_function(500, "Error");
+		} else if ($result !== true) {
+			if ($result->num_rows > 0) {
+                return $result->fetch_assoc();
+			} else {
+                error_function(404, "not Found");
+            }
+		} else {
+            error_function(404, "not Found");
+        }
+    }
+
     function get_all_reservations() {
         global $database;
 
@@ -65,13 +83,20 @@
             return false;
         }
     
+        // Send email to user
+        $to = "morhaf.mouayad@gmail.com";
+        $subject = "Reservation Confirmation";
+        $message = "Your reservation for " . $place_name . " from " . $from_date . " to " . $to_date . " has been confirmed.";
+        $headers = "From: morhaf.mouayad@gmail.com";
+        mail($to, $subject, $message, $headers);
+    
         return true;
     }
-    
-    function update_reservation($reservation, $date_time, $place_name, $host, $description) {
+        
+    function update_reservation($id, $from_date, $to_date, $place_name, $host, $description) {
         global $database;
 
-        $result = $database->query("UPDATE `events` SET date_time = '$date_time', place_name = '$place_name', host = '$host', description = '$description' WHERE place_name = '$reservation';");
+        $result = $database->query("UPDATE `events` SET from_date = '$from_date', to_date = '$to_date', place_name = '$place_name', host = '$host', description = '$description' WHERE id = '$id';");
 
         if (!$result) {
             return false;
