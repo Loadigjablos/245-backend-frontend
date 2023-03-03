@@ -77,20 +77,6 @@ function RenderAll() {
         }
       });
 
-      const x = parseInt(JSON.parse(ElementPlace.position).x);
-      const y = parseInt(JSON.parse(ElementPlace.position).y);
-      const width = parseInt(JSON.parse(ElementPlace.position).width);
-      const height = parseInt(JSON.parse(ElementPlace.position).height);
-
-      ctx.fillStyle = "#000000";
-      if (AllReservationsFromThisPlace == null) {
-        ctx.fillStyle = "#00AF00";
-      } else {
-        ctx.fillStyle = "#AF0000";
-      }
-
-      ctx.fillRect(x, y, width, height);
-
       let type = "";
       if ((Element.type == "r")) {
         type = "Raum";
@@ -98,6 +84,22 @@ function RenderAll() {
         type = "Parkplatz";
       } else {
         type = "UnIdentified Thing";
+      }
+      
+      if(ElementPlace.etage === etage) {
+        const x = parseInt(JSON.parse(ElementPlace.position).x);
+        const y = parseInt(JSON.parse(ElementPlace.position).y);
+        const width = parseInt(JSON.parse(ElementPlace.position).width);
+        const height = parseInt(JSON.parse(ElementPlace.position).height);
+
+        ctx.fillStyle = "#000000";
+        if (AllReservationsFromThisPlace == null) {
+          ctx.fillStyle = "#00AF00";
+        } else {
+          ctx.fillStyle = "#AF0000";
+        }
+
+        ctx.fillRect(x, y, width, height);
       }
       /*
             ctx.fillText(
@@ -180,7 +182,7 @@ function requestPlace() {
       requestPlace.status == 404 ||
       requestPlace.status == 403
     ) {
-      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden oder Es Gibt keine");
     }
     dataPlaces = JSON.parse(requestPlace.responseText);
   };
@@ -199,7 +201,7 @@ function requestPlace() {
       requestReservation.status == 404 ||
       requestReservation.status == 403
     ) {
-      MessageUI("Error", "Daten Konnten Nicht Geholt werden");
+      MessageUI("Error", "Daten Konnten Nicht Geholt werden oder Es Gibt keine");
     }
     dataPlaces = JSON.parse(requestReservation.responseText);
   };
