@@ -1,18 +1,20 @@
+
+const namePlace = document.querySelector("#name");
+
 // The login button in the header can log you out or send you to the login page
 
 const loginButton = document.querySelector("#login");
 
 loginButton.addEventListener("click", function(e) {
-    if(document.cookie !== "" || document.cookie !== null) {
+    if(namePlace.innerText == "Bitte Logen sie sich Ein!") {
         window.location.href = "/frontend/view/login.html";
     } else {
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/API/V1;";
+        window.location.href = "/";
     }
 });
 
 // Display your name when Logged In
-
-const namePlace = document.querySelector("#name");
 
 function requesting() {
     /**
@@ -31,6 +33,8 @@ function requesting() {
             namePlace.innerText = "Sekretariat: " + response.name;
         } else if(response.type == "D") {
             namePlace.innerText = "Dozent: " + response.name;
+        } else {
+            namePlace.innerText = "Bitte Logen sie sich Ein!";
         }
     }
 

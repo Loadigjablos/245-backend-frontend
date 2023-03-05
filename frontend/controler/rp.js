@@ -121,7 +121,7 @@ function RenderAll() {
       const CASTS = document.createElement("td");
       const RESERVE = document.createElement("td");
 
-      NAME.innerText = ElementPlace.name;
+      NAME.innerText = index + ") " + ElementPlace.name;
 
       // Lists all Reservations to the Casts field
       AllReservationsFromThisPlace.forEach((reservation) => {
