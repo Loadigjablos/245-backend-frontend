@@ -46,7 +46,6 @@ function requesting() {
 
 requesting();
 
-
 function MessageUI(head, information) {
     const thing = document.createElement("div");
     thing.className = "message-and-error";

@@ -148,7 +148,7 @@ function RenderAll() {
         CASTS.appendChild(NEW_RESERVATION);
       });
 
-      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.id + "'>Reservation machen</>";
+      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.name + "'>Reservation machen</>";
 
       NEW_ROW.appendChild(NAME);
       NEW_ROW.appendChild(CASTS);
