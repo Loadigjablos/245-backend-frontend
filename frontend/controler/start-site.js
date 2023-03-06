@@ -26,13 +26,14 @@ function request() {
 }
 
 function RenderAll() {
-    data.forEach((Element) => {
-        tabelReservations.innerHTML =`
+    tabelReservations.innerHTML =`
         <tr>
             <th>Name</th>
             <th>Datum</th>
         </tr>
         `;
+        
+    data.forEach((Element) => {
 
         if (Element !== null) {
             tabelReservations.innerHTML += `

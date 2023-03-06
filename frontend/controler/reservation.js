@@ -41,16 +41,30 @@ function requestPost() {
             request.status == 404 ||
             request.status == 403
           ) {
-            MessageUI("Error", "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine: " + JSON.parse(request.responseText).error);
+            MessageUI("Error: " + request.statusText, "Daten Konnten Nicht Gespeichert werden oder Es Gibt keine: " + JSON.parse(request.responseText).error);
         } else {
-            MessageUI("Success", "Succesfuly Created a new Reservation");
+            MessageUI("Erfolg", "Eine neue Reservierung wurde erfolgreich erstellt");
         }
     }
     var request = new XMLHttpRequest();
-    request.open("POST", "../../../../API/V1/Login");
+    request.open("POST", "../../../../API/V1/Reservation");
     request.onreadystatechange = onRequstUpdate;
 
+    let hostName;
+
+    const selectThing = document.querySelector("#select");
+
+    if (selectThing !== undefined && selectThing !== null) {
+
+        // Source: https://stackoverflow.com/questions/1085801/get-selected-value-in-dropdown-list-using-javascript
+        hostName = selectThing.options[selectThing.selectedIndex].text;
+
+    } else {
+        hostName = userName;
+    }
+
     const requestArray = {
+        host: hostName,
         from_date: dateFrom.value + " " + timeFrom.value + ":00",
         to_date: dateTo.value + " " + timeTo.value + ":00",
         place_name: place.value,
@@ -88,22 +102,33 @@ const onRequstUpdateWhoami = function() {
             if (requestSelectThing.readyState < 4) {
                 return;
             }
-            const retunedData = JSON.parse(requestSelectThing.responseText);
+            let retunedData = [];
+            retunedData = JSON.parse(requestSelectThing.responseText);
 
             const selectThing = document.createElement("select");
 
-            retunedData.foreach(Element => {
-                console.log(Element.name);
-            });
+            selectThing.id = "select";
 
-            retunedData.foreach(Element => {
+            /** i dont know why the .lenght does not work but this works somehow
+             * Source: https://stackoverflow.com/questions/5317298/find-length-size-of-an-array-in-javascript
+             */
+            function count(array){
+                var c = 0;
+                for(i in array) // in returns key, not object
+                    if(array[i] != undefined)
+                        c++;
+            
+                return c;
+            }
+
+            for(let i = 0; i < count(retunedData); i++) {
                 const newSelectThing = document.createElement("option");
 
-                newSelectThing.innerText = Element.name;
-                newSelectThing.value = Element.name;
+                newSelectThing.innerText = retunedData[i].name;
+                newSelectThing.value = retunedData[i].name;
 
                 selectThing.appendChild(newSelectThing);
-            });
+            }
 
             host.appendChild(selectThing);
         }
