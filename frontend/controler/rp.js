@@ -25,6 +25,17 @@ function placeEtageNumber() {
   }
 }
 
+// search function
+
+const searchPlace = document.querySelector("#search-input");
+const searchButton = document.querySelector("#search-button");
+
+searchButton.addEventListener("click", function(e) {
+  const searchValue = searchPlace.value;
+  window.location = "rp.html#" + searchValue;
+});
+
+
 // THIS IS TO DISPLAY ALL THE ROOMS AND PARKINGSPACES
 
 const tabelReservations = document.querySelector("#tabel-reservations");
@@ -122,6 +133,7 @@ function RenderAll() {
       const RESERVE = document.createElement("td");
 
       NAME.innerText = index + ") " + ElementPlace.name;
+      NAME.id = ElementPlace.name;
 
       // Lists all Reservations to the Casts field
       AllReservationsFromThisPlace.forEach((reservation) => {
@@ -130,19 +142,22 @@ function RenderAll() {
         const DELETE_EDIT = document.createElement("p");
         const INFORMATION = document.createElement("p");
 
+        NEW_RESERVATION.className = "white";
+
         DELETE_EDIT.innerHTML = "<button onclick='reservationDelete(" + reservation.reservation_id + ")'>Löschen</button>" + "<a href='reservation-edit.html#" + reservation.reservation_id + "'>Editieren</>"
 
-        INFORMATION.innerText =
-          "Von: " +
+        INFORMATION.innerHTML =
+          "Von: <p class='white' id='" + reservation.from + "'>" +
           reservation.from +
-          " Bis: " +
+          "</p> Bis: <p class='white' id='" + reservation.to + "'>" +
           reservation.to +
-          "\n Host/Reservierender: " +
+          "</p><br> Host/Reservierender: <p class='white' id='" + reservation.host + "'>" +
           reservation.host +
-          " Wegen: " +
+          "</p> Wegen:" +
           reservation.description;
 
         NEW_RESERVATION.appendChild(INFORMATION);
+        NEW_RESERVATION.innerHTML += "<br>";
         NEW_RESERVATION.appendChild(DELETE_EDIT);
 
         CASTS.appendChild(NEW_RESERVATION);
@@ -182,7 +197,7 @@ function reservationDelete(id) {
     ) {
       MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
     } else {
-      MessageUI("Success", "Succesfuly Deleted The Reservation");
+      MessageUI("Erfolg", "Eine Reservierung wurde erfolgreich Gelöscht");
       requestPlace();
     }
   };

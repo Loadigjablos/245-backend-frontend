@@ -67,3 +67,21 @@ function MessageUI(head, information) {
 
     document.body.appendChild(thing);
 }
+
+// source: https://stackoverflow.com/questions/31106096/checking-if-specific-console-error-occurred-exists-with-javascript
+/*
+var original = window.console
+window.console += {
+    error: function(){
+
+        //Gets text from error message.
+        errorText = arguments['0'];
+
+        if (errorText.includes('TimeEvent.COMPLETE')) {
+            MessageUI("error", errorText);
+        }
+
+        original.error.apply(original, arguments);
+    }
+}
+*/

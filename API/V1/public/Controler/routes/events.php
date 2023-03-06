@@ -22,13 +22,13 @@
     });
     
     
-    $app->get("/Reservation/{place_name}", function (Request $request, Response $response, $args) {
+    $app->get("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
 
-        $place_name = $args["place_name"];
+        $id = intval($args["id"]);
 
-        $reservation = get_reservation_by_name($place_name);
+        $reservation = get_reservation_by_id($id);
 
         if ($reservation) {
             echo json_encode($reservation);
@@ -37,7 +37,7 @@
             error($reservation, 500);
         }
         else {
-            error("The Name "  . $place_name . " was not found.", 404);
+            error("The Name "  . $id . " was not found.", 404);
         }
 
         return $response;
