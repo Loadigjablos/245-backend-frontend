@@ -11,7 +11,7 @@ const cancel = document.querySelector("#cancel");
 
 const host = document.querySelector("#host");
 
-const placeName = location.hash.substring(1);
+const RESERVATION_ID = location.hash.substring(1);
 
 place.value = placeName;
 

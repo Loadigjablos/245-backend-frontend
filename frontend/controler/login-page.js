@@ -28,7 +28,13 @@ function requestPost() {
             return;
         }
         type.innerText = request.statusText
-        message.innerText = JSON.parse(request.responseText).error;
+        if (message.innerText = JSON.parse(request.responseText).error !== undefined) {
+            message.innerText = JSON.parse(request.responseText).error;
+        } else if (request.status == 200 || request.status == 201) {
+            message.innerText = "Success";
+        } else {
+            message.innerText = "Somthing went wrong, Contact the admin or try again with diffrent account information";
+        }
     }
     var request = new XMLHttpRequest();
     request.open("POST", "../../../../API/V1/Login");

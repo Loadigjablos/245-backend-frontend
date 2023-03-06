@@ -121,7 +121,7 @@ function RenderAll() {
       const CASTS = document.createElement("td");
       const RESERVE = document.createElement("td");
 
-      NAME.innerText = ElementPlace.name;
+      NAME.innerText = index + ") " + ElementPlace.name;
 
       // Lists all Reservations to the Casts field
       AllReservationsFromThisPlace.forEach((reservation) => {
@@ -148,7 +148,7 @@ function RenderAll() {
         CASTS.appendChild(NEW_RESERVATION);
       });
 
-      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.id + "'>Reservation machen</>";
+      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.name + "'>Reservation machen</>";
 
       NEW_ROW.appendChild(NAME);
       NEW_ROW.appendChild(CASTS);
@@ -180,12 +180,15 @@ function reservationDelete(id) {
       requestPlace.status == 404 ||
       requestPlace.status == 403
     ) {
-      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response);
+      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
+    } else {
+      MessageUI("Success", "Succesfuly Deleted The Reservation");
+      requestPlace();
     }
   };
 
-  var requestPlace = new XMLHttpRequestPlace();
-  requestPlace.open("DELETE", "../../API/V1/Reservation/" + name);
+  var requestPlace = new XMLHttpRequest();
+  requestPlace.open("DELETE", "../../API/V1/Reservation/" + id);
   requestPlace.onreadystatechange = onRequstUpdate;
   requestPlace.send();
 }
