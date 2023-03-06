@@ -87,10 +87,8 @@
         return $current_user_id;
     }
     
-    
-
     $app->get("/WhoAmI", function (Request $request, Response $response, $args) {
-// unotherized pepole will get rejected
+        // unotherized pepole will get rejected
         $id = user_validation();
 		$user = get_user_id($id);
 

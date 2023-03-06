@@ -47,6 +47,13 @@
         //everyone
         validate_token();
 
+        $id = user_validation();
+
+		$email = get_user_email($id);
+
+        $email = implode(':', $email);
+
+
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
 
@@ -84,7 +91,7 @@
         }
 
         //checking if everything was good
-        if (create_reservation($from_date, $to_date, $place_name, $host, $description) === true) {
+        if (create_reservation($from_date, $to_date, $place_name, $host, $description, $email) === true) {
             message_function(200, "The reservation was successfully created.");
         } 
         else {
@@ -97,6 +104,10 @@
 
 		$id = user_validation("A");
         validate_token();
+
+        $email = get_user_email($id);
+
+        $email = implode(':', $email);
 		
 		$id = $args["id"];
 		
@@ -160,7 +171,7 @@
 			$reservation["description"] = $description;
 		}
 		
-		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"])) {
+		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"], $email)) {
 			message_function(200, "The reservation data were successfully updated");
 		}
 		else {
