@@ -30,11 +30,10 @@ function placeEtageNumber() {
 const searchPlace = document.querySelector("#search-input");
 const searchButton = document.querySelector("#search-button");
 
-searchButton.addEventListener("click", function(e) {
+searchButton.addEventListener("click", function (e) {
   const searchValue = searchPlace.value;
   window.location = "rp.html#" + searchValue;
 });
-
 
 // THIS IS TO DISPLAY ALL THE ROOMS AND PARKINGSPACES
 
@@ -119,9 +118,12 @@ function RenderAll() {
 
         ctx.fillStyle = "#FFFFFF";
 
-        ctx.fillText(index + ": " + ElementPlace.name + ", " + type,
-          X + (WIDTH / 2) - (index + " :" + ElementPlace.name + ", " + type).length * 2,
-          Y + (HEIGHT / 2)
+        ctx.fillText(
+          index + ": " + ElementPlace.name + ", " + type,
+          X +
+            WIDTH / 2 -
+            (index + " :" + ElementPlace.name + ", " + type).length * 2,
+          Y + HEIGHT / 2
         );
       }
 
@@ -144,14 +146,26 @@ function RenderAll() {
 
         NEW_RESERVATION.className = "white";
 
-        DELETE_EDIT.innerHTML = "<button onclick='reservationDelete(" + reservation.reservation_id + ")'>Löschen</button>" + "<a href='reservation-edit.html#" + reservation.reservation_id + "'>Editieren</>"
+        DELETE_EDIT.innerHTML =
+          "<button onclick='reservationDelete(" +
+          reservation.reservation_id +
+          ")'>Löschen</button>" +
+          "<a href='reservation-edit.html#" +
+          reservation.reservation_id +
+          "'>Editieren</>";
 
         INFORMATION.innerHTML =
-          "Von: <p class='white' id='" + reservation.from + "'>" +
+          "Von: <p class='white' id='" +
           reservation.from +
-          "</p> Bis: <p class='white' id='" + reservation.to + "'>" +
+          "'>" +
+          reservation.from +
+          "</p> Bis: <p class='white' id='" +
           reservation.to +
-          "</p><br> Host/Reservierender: <p class='white' id='" + reservation.host + "'>" +
+          "'>" +
+          reservation.to +
+          "</p><br> Host/Reservierender: <p class='white' id='" +
+          reservation.host +
+          "'>" +
           reservation.host +
           "</p> Wegen:" +
           reservation.description;
@@ -163,21 +177,22 @@ function RenderAll() {
         CASTS.appendChild(NEW_RESERVATION);
       });
 
-      RESERVE.innerHTML = "<a href='reservation.html#" + ElementPlace.name + "'>Reservation machen</>";
+      RESERVE.innerHTML =
+        "<a href='reservation.html#" +
+        ElementPlace.name +
+        "'>Reservation machen</>";
 
       NEW_ROW.appendChild(NAME);
       NEW_ROW.appendChild(CASTS);
       NEW_ROW.appendChild(RESERVE);
 
       tabelReservations.appendChild(NEW_ROW);
-
     }
   });
 }
 
-
 /**
- * 
+ *
  * @param {*} id
  */
 function reservationDelete(id) {
@@ -195,14 +210,17 @@ function reservationDelete(id) {
       requestPlace.status == 404 ||
       requestPlace.status == 403
     ) {
-      MessageUI("Error", "Daten konnten nicht gelöscht werden: " + response.error);
+      MessageUI(
+        "Error",
+        "Daten konnten nicht gelöscht werden: " + response.error
+      );
     } else {
       MessageUI("Erfolg", "Eine Reservierung wurde erfolgreich Gelöscht");
       requestPlace();
     }
   };
 
-  var requestPlace = new XMLHttpRequest();
+  let requestPlace = new XMLHttpRequest();
   requestPlace.open("DELETE", "../../API/V1/Reservation/" + id);
   requestPlace.onreadystatechange = onRequstUpdate;
   requestPlace.send();
@@ -227,9 +245,19 @@ function requestPlace() {
         "Error",
         "Daten Konnten Nicht Geholt werden oder Es Gibt keine"
       );
+    } else if (requestPlace.status == 500 || requestPlace.status == 501) {
+      MessageUI(
+        "Server Error: " + requestPlace.statusText,
+        "Der Server Hat einen Kritischen Fehler erliten: " +
+          requestPlace.responseText
+      );
     } else {
-      dataPlaces = JSON.parse(requestPlace.responseText);
-      RenderAll();
+      try {
+        dataPlaces = JSON.parse(requestPlace.responseText);
+        RenderAll();
+      } catch (e) {
+        MessageUI("Beschädigte daten", "Daten Funktionieren nicht: " + e);
+      }
     }
   };
 
@@ -250,6 +278,15 @@ function requestPlace() {
       MessageUI(
         "Error",
         "Daten Konnten Nicht Geholt werden oder Es Gibt keine"
+      );
+    } else if (
+      requestReservation.status == 500 ||
+      requestReservation.status == 501
+    ) {
+      MessageUI(
+        "Server Error: " + requestReservation.statusText,
+        "Der Server Hat einen Kritischen Fehler erliten: " +
+          requestReservation.responseText
       );
     } else {
       dataReservated = JSON.parse(requestReservation.responseText);
