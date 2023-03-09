@@ -113,6 +113,7 @@ td h2, td button, .black-box h1, td a, td p {
 }
 input {
     width: 70%;
+    border: 1px solid #0A0A32;
 }
 .message-and-error {
     position: fixed;
