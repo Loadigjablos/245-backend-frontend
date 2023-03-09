@@ -64,14 +64,14 @@
         global $database;
         
         // Check if place_name already exists
-        $result = $database->prepare("SELECT COUNT(*) FROM `events` WHERE `place_name` = ? AND `to_date` > ?");
-        $result->bind_param("ss", $place_name, $from_date);
-        $result->execute();
-        $result = $result->get_result()->fetch_row()[0];
-        if ($result > 0) {
+        $check_result = $database->prepare("SELECT COUNT(*) FROM `events` WHERE `place_name` = ? AND `to_date` > ?");
+        $check_result->bind_param("ss", $place_name, $from_date);
+        $check_result->execute();
+        $check_result = $check_result->get_result()->fetch_row()[0];
+        if ($check_result > 0) {
             // place_name already exists, return false
             error_function(400, "It's look like someone booked ( " . $place_name . " ) before you.");       
-        }
+        };
         
         // Insert new reservation
         $result = $database->prepare("INSERT INTO `events` (`from_date`, `to_date`, `place_name`, `host`, `description`) VALUES (?, ?, ?, ?, ?)");
@@ -81,7 +81,7 @@
         if (!$result) {
             // handle error
             return false;
-        }
+        };
                 
         // Convert date and time to UTC format
         $from_date_utc = gmdate('Ymd\THis\Z', strtotime($from_date));

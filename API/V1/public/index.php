@@ -69,6 +69,10 @@
             error_function(404, "not Found");
         }
 
+        if ($user["name"] !==  $name) {
+            error_function(404, "not Found");
+        }
+
         $token = create_token($name, $password, $user["id"]);
 
         setcookie("token", $token, time() + 3600);
