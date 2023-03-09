@@ -26,16 +26,14 @@ function requestPost() {
     if (request.readyState < 4) {
       return;
     }
-    type.innerText = request.statusText;
     if (
-      (message.innerText = JSON.parse(request.responseText).error !== undefined)
+      (JSON.parse(request.responseText).error !== undefined)
     ) {
-      message.innerText = JSON.parse(request.responseText).error;
+      MessageUI("Error: " + request.statusText, JSON.parse(request.responseText).error);
     } else if (request.status == 200 || request.status == 201) {
-      message.innerText = "Success";
+      MessageUI("Erfolg", "Du Bist Angemeldet");
     } else {
-      message.innerText =
-        "Somthing went wrong, Contact the admin or try again with diffrent account information";
+      MessageUI("Error: " + request.statusText, "Somthing went wrong, Contact the admin or try again with diffrent account information: " + JSON.parse(request.responseText).error);
     }
   };
   let request = new XMLHttpRequest();

@@ -1,6 +1,6 @@
 const usersTable = document.querySelector("#users");
 
-const usernameA = document.querySelector("#name");
+const usernameA = document.querySelector("#username");
 const email = document.querySelector("#email");
 const password = document.querySelector("#pwd");
 
@@ -34,8 +34,7 @@ const onRequstUpdate = function() {
         usersTable.innerHTML = `
         <tr>
             <th>Benutzer name</th>
-            <th>Type</th>
-            <th>Bearbeitungen</th>
+            <th>Löschen</th>
         </tr>
         `;
         JSON.parse(request.responseText).forEach(element => {
@@ -48,7 +47,6 @@ const onRequstUpdate = function() {
 
             EDIT.innerHTML = `
                 <button onclick="deleteUser('${element.name}')">Delete</button>
-                <a href='user-edit.html#${element.name}'>Editieren</a>
             `;
 
             NEW_ROW.appendChild(NAME);
@@ -76,8 +74,8 @@ document.querySelector("#create-object").addEventListener("click", function(e){
             requestCreate.status == 403
         ) {
             MessageUI(
-              "Error",
-              "Daten Konnten Nicht Gelöscht werden, Es Gibt keine oder du bist kein Admin"
+              "Error " + requestCreate.statusText,
+              "Daten Konnten Nicht Gelöscht werden, Es Gibt keine oder du bist kein Admin" + requestCreate.responseText
             );
         } else if (
             requestCreate.status == 500 ||
@@ -158,7 +156,7 @@ function deleteUser(name) {
     }
 
     const requestDelete = new XMLHttpRequest();
-    requestDelete.open("GET", "../../../../API/V1/User/" + name);
+    requestDelete.open("DELETE", "../../../../API/V1/User/" + name);
     requestDelete.onreadystatechange = onRequstDelete;
     requestDelete.send();
 }

@@ -54,7 +54,7 @@ function RenderAll() {
     ctx.fillRect(0, i, 10, 1);
   }
   ctx.fillRect(20, CANVAS_HEIGHT - 20, 50, 5);
-  ctx.fillText("50Pixel = 4Meter", 20, CANVAS_HEIGHT - 25);
+  ctx.fillText("50Pixel = 2 Meter", 20, CANVAS_HEIGHT - 25);
 
   data.forEach((Element, index) => {
     if (Element == undefined) {
