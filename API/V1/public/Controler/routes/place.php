@@ -46,6 +46,7 @@
     $app->post("/Place", function (Request $request, Response $response, $args) {
         $id = user_validation("A");
         validate_token();
+        validate_string($_string);
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
@@ -95,6 +96,7 @@
     $app->delete("/Place/{place_name}", function (Request $request, Response $response, $args) {
 		$id = user_validation("A");
         validate_token();
+        validate_string($_string);
 		
 		$place_name = $args["place_name"];
 		

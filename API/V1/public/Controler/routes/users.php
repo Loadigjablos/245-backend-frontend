@@ -24,6 +24,7 @@
     $app->post("/User", function (Request $request, Response $response, $args) {
         $id = user_validation("A");
         validate_token();
+        validate_string($_string);
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
@@ -79,6 +80,7 @@
 
 		$id = user_validation("A");
         validate_token();
+        validate_string($_string);
 		
 		$user_id = $args["id"];
 		
@@ -158,6 +160,7 @@
     $app->delete("/User/{name}", function (Request $request, Response $response, $args) {
 		$id = user_validation("A");
         validate_token();
+        validate_string($_string);
 		
 		$name = $args["name"];
 		

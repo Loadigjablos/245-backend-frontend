@@ -1,9 +1,9 @@
 <?php
 // LDAP variables
-$ldap_host = 'ldap.forumsys.com';
+$ldap_host = 'ldap://ldap.forumsys.com';
 $ldap_port = '389';
 $ldap_dn = 'dc=example,dc=com';
-$ldap_user = 'cn=read-only-admin,' . $ldap_dn;
+$ldap_user = 'cn=admin,' . $ldap_dn;
 $ldap_pass = 'password';
 
 // Connect to LDAP server

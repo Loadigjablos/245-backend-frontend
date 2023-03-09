@@ -46,6 +46,7 @@
     $app->post("/Reservation", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
+        validate_string($_string);
 
         $id = user_validation();
 
@@ -104,6 +105,7 @@
 
 		$id = user_validation("A");
         validate_token();
+        validate_string($_string);
 
         $email = get_user_email($id);
 
@@ -184,6 +186,7 @@
     $app->delete("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
+        validate_string($_string);
         
         $id = $args["id"];
         
