@@ -108,6 +108,7 @@ END:VCALENDAR";
         $reservation_details .= "Place Name: " . $place_name . "\r\n\n";
         $reservation_details .= "From Date: " . $from_date . "\r\n\n";
         $reservation_details .= "To Date: " . $to_date . "\r\n\n";
+        $reservation_details .= "Description: " . $description . "\r\n\n";
 
         // Generate email body with reservation details and .ics file attachment
         $boundary = md5(time());
@@ -128,6 +129,12 @@ END:VCALENDAR";
         // Send email with reservation details and .ics file attachment
         $to = $email;
         $subject = "Your Reservation";
+        if (!mail($to, $subject, $body, $headers, "-r morhaf.mouayad@gmail.com")) {
+            error_function(400, "Email sending failed, but the reservation was successfully created.");
+        }
+
+        $to = "dominic.streit@ict.csbe.ch";
+        $subject = "New Reservation";
         if (!mail($to, $subject, $body, $headers, "-r morhaf.mouayad@gmail.com")) {
             error_function(400, "Email sending failed, but the reservation was successfully created.");
         }

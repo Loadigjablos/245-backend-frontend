@@ -1,43 +1,35 @@
 <?php
-// LDAP variables
-$ldap_host = 'ldap://ldap.forumsys.com';
-$ldap_port = '389';
-$ldap_dn = 'dc=example,dc=com';
-$ldap_user = 'cn=admin,' . $ldap_dn;
-$ldap_pass = 'password';
+	
+	$ldap_dn = "uid="."einstein".",dc=example,dc=com";
+	$ldap_password = "password";
 
-// Connect to LDAP server
-$ldap_conn = ldap_connect($ldap_host, $ldap_port);
-ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	
+	$ldap_con = ldap_connect("ldap.forumsys.com");
+	ldap_set_option($ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-// Bind LDAP user
-ldap_bind($ldap_conn, $ldap_user, $ldap_pass);
+    if (empty($ldap_password)) {
+        echo "You have to write an Password";
+        return;
+    }
 
-// Search for user
-$search_filter = '(uid=mathew)';
-$search_base = 'dc=example,dc=com';
-$search_result = ldap_search($ldap_conn, $search_base, $search_filter);
-if (!$search_result) {
-  echo 'LDAP search failed.';
-  exit;
-}
-$search_entries = ldap_get_entries($ldap_conn, $search_result);
-if (!$search_entries) {
-  echo 'No entries found.';
-  exit;
-}
+	if(@ldap_bind($ldap_con,$ldap_dn,$ldap_password))
+			
+	$ldap_dn = "cn=read-only-admin,dc=example,dc=com";
+	
+	$ldap_con = ldap_connect("ldap.forumsys.com");
+	
+	ldap_set_option($ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
+	
+	if(ldap_bind($ldap_con, $ldap_dn, $ldap_password)) {
 
-// Display user attributes
-foreach ($search_entries[0] as $attr => $value) {
-  if (is_numeric($attr)) {
-    continue;
-  }
-  echo $attr . ': ' . $value[0] . '<br>';
-}
-
-// Close LDAP connection
-ldap_close($ldap_conn);
-
-
-
+		$filter = "(cn=*)";
+		$result = ldap_search($ldap_con,"dc=example,dc=com",$filter) or exit("Unable to search");
+		$entries = ldap_get_entries($ldap_con, $result);
+		
+        $response = json_encode($entries);
+		echo $response;
+    }
+	else {
+		echo "Invalid Credential";
+    }
 ?>
