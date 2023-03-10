@@ -6,7 +6,7 @@
   
         validate_token(); // unotherized pepole will get rejected
 
-		$place_name = validate_string($args["place_name"]);
+		$place_name = $args["place_name"];
 
 		$place = get_room($place_name);
 
@@ -49,9 +49,9 @@
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
-        $position = trim(validate_string($request_data["position"]));
-        $name = trim(validate_string($request_data["name"]));
-        $type = trim(validate_string($request_data["type"]));
+        $position = trim($request_data["position"]);
+        $name = trim($request_data["name"]);
+        $type = trim($request_data["type"]);
     
         //The position field cannot be empty and must not exceed 2048 characters
         if (empty($position)) {
@@ -96,7 +96,7 @@
 		$id = user_validation("A");
         validate_token();
 		
-		$place_name = validate_string($args["place_name"]);
+		$place_name = $args["place_name"];
 		
 		$result = delete_place($place_name);
 		

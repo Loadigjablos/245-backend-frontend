@@ -69,10 +69,6 @@
             error_function(404, "not Found");
         }
 
-        if ($user["name"] !==  $name) {
-            error_function(404, "not Found");
-        }
-
         $token = create_token($name, $password, $user["id"]);
 
         setcookie("token", $token, time() + 3600);
@@ -91,8 +87,10 @@
         return $current_user_id;
     }
     
+    
+
     $app->get("/WhoAmI", function (Request $request, Response $response, $args) {
-        // unotherized pepole will get rejected
+// unotherized pepole will get rejected
         $id = user_validation();
 		$user = get_user_id($id);
 

@@ -35,28 +35,6 @@
         }
     }
 
-    function get_user_email($id) {
-        global $database;
-
-        $result = $database->query("SELECT email FROM users WHERE id = '$id';");
-
-        if ($result == false) {
-            error_function(500, "Error");
-		} else if ($result !== true) {
-			if ($result->num_rows > 0) {
-                return $result->fetch_assoc();
-			} else {
-                error_function(404, "not Found");
-            }
-		} else {
-            error_function(404, "not Found");
-        }
-
-        $result = $result->fetch_assoc();
-
-	    return $result;
-    }
-
     function get_user_by_mail($mail) {
         global $database;
 

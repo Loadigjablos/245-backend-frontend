@@ -16,12 +16,10 @@
      * @param _integer this variable will be turned into a safe integer
      * @return _integer a integer number
      */
-
     function validate_number($_integer) {
         $_integer = intval($_integer);
         return $_integer;
     }
-
     /**
      * @param _float this variable will be turned into a safe float
      * @return _float a float number
@@ -30,7 +28,6 @@
         $_float = floatval($_float);
         return $_float;
     }
-
     /**
      * @param _bool changes every value to a boolean
      * @return _bool either true or false
@@ -39,7 +36,6 @@
         $_bool = filter_var($_bool, FILTER_VALIDATE_BOOLEAN);
         return $_bool;
     }
-    
     require_once "Controler/Secret.php";
     /**
      * 

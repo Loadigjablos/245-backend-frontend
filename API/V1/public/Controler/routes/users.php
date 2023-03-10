@@ -27,11 +27,11 @@
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
-        $name = trim(validate_string($request_data["name"]));
-        $email = trim(validate_string($request_data["email"]));
-        $password = trim(validate_string($request_data["password"]));
-        $type = trim(validate_string($request_data["type"]));
-        $add_date = trim(validate_string($request_data["add_date"]));
+        $name = trim($request_data["name"]);
+        $email = trim($request_data["email"]);
+        $password = trim($request_data["password"]);
+        $type = trim($request_data["type"]);
+        $add_date = trim($request_data["add_date"]);
     
         //The position field cannot be empty and must not exceed 2048 characters
         if (empty($name)) {
@@ -80,7 +80,7 @@
 		$id = user_validation("A");
         validate_token();
 		
-		$user_id = validate_number($args["id"]);
+		$user_id = $args["id"];
 		
 		$user = get_user_by_id($id);
 		
@@ -93,27 +93,55 @@
 		$request_data = json_decode($request_body_string, true);
 
 		if (isset($request_data["name"])) {
-			$name = validate_string($request_data["name"], 255);
+			$name = strip_tags(addslashes($request_data["name"]));
+		
+			if (strlen($name) > 255) {
+				error_function(400, "The name is too long. Please enter less than 255 letters.");
+			}
+		
 			$user["name"] = $name;
 		}
 
         if (isset($request_data["email"])) {
-			$email = validate_string($request_data["email"], 500);
+			$email = strip_tags(addslashes($request_data["email"]));
+		
+			if (strlen($email) > 500) {
+				error_function(400, "The email is too long. Please enter less than 500 letters.");
+			}
+		
 			$user["email"] = $email;
 		}
 
         if (isset($request_data["password_hash"])) {
-			$password = validate_string($request_data["password_hash"], 1000);
-			$user["password_hash"] = hash("sha256", $password);
+			$password = strip_tags(addslashes($request_data["password_hash"]));
+		
+			if (strlen($password) > 1000) {
+				error_funciton(400, "The password is too long. Please enter less than 1000 letters.");
+			}
+		
+			$user["password_hash"] = $password;
+
+            $user["password_hash"] = hash("sha256", $password);
+
 		}
 
         if (isset($request_data["type"])) {
-			$type = validate_string($request_data["type"], 1000);
+			$type = strip_tags(addslashes($request_data["type"]));
+		
+			if (strlen($type) > 1000) {
+				error_funciton(400, "The type is too long. Please enter less than 1000 letters.");
+			}
+		
 			$user["type"] = $type;
 		}
 
         if (isset($request_data["add_date"])) {
-			$add_date = validate_string($request_data["add_date"], 1000);
+			$add_date = strip_tags(addslashes($request_data["add_date"]));
+		
+			if (strlen($add_date) > 1000) {
+				error_function(400, "The type is too long. Please enter less than 1000 letters.");
+			}
+		
 			$user["add_date"] = $add_date;
 		}
 		
@@ -126,13 +154,12 @@
 		
 		return $response;
 	});
-
     
     $app->delete("/User/{name}", function (Request $request, Response $response, $args) {
 		$id = user_validation("A");
         validate_token();
-
-        $name = validate_string($args["name"]);
+		
+		$name = $args["name"];
 		
 		$result = delete_user($name);
 		
