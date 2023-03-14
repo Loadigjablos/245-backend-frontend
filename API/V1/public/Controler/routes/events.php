@@ -2,20 +2,14 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use Psr\Http\Message\ServerRequestInterface as Request;
 
-<<<<<<< HEAD
     //get all reservations
-=======
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
     $app->get("/Reservations", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
 
         $reservations = get_all_reservations();
 
-<<<<<<< HEAD
         //list the data
-=======
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         if ($reservations) {
             echo json_encode($reservations);
         }
@@ -29,11 +23,7 @@
         return $response;
     });
     
-<<<<<<< HEAD
     //list a reservation data using id
-=======
-    
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
     $app->get("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
@@ -42,10 +32,7 @@
 
         $reservation = get_reservation_by_id($id);
 
-<<<<<<< HEAD
         //list them
-=======
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         if ($reservation) {
             echo json_encode($reservation);
         }
@@ -59,7 +46,6 @@
         return $response;
     });
 
-<<<<<<< HEAD
     //create reservation 
     $app->post("/Reservation", function (Request $request, Response $response, $args) {
         //everyone
@@ -72,11 +58,6 @@
 		$email = get_user_email($id);
 
         $email = implode(':', $email);
-=======
-    $app->post("/Reservation", function (Request $request, Response $response, $args) {
-        //everyone
-        validate_token();
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
@@ -87,11 +68,7 @@
         $host = trim($request_data["host"]);
         $description = trim($request_data["description"]);
     
-<<<<<<< HEAD
         //The fields cannot be empty and must not exceed 2048 characters
-=======
-        //The position field cannot be empty and must not exceed 2048 characters
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         if (empty($to_date)) {
             error_function(400, "The (to date) field must not be empty.");
         } 
@@ -131,7 +108,6 @@
     //update reservation using id
     $app->put("/Reservation/{id}", function (Request $request, Response $response, $args) {
 
-<<<<<<< HEAD
         //just admin
 		$id = user_validation("A");
         validate_token();
@@ -141,10 +117,6 @@
         $email = get_user_email($id);
 
         $email = implode(':', $email);
-=======
-		$id = user_validation("A");
-        validate_token();
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
 		
 		$id = $args["id"];
 		
@@ -158,11 +130,8 @@
 		
 		$request_data = json_decode($request_body_string, true);
 
-<<<<<<< HEAD
 
         //if input is null it should not be updated
-=======
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
 		if (isset($request_data["from_date"])) {
 			$from_date = strip_tags(addslashes($request_data["from_date"]));
 		
@@ -213,12 +182,8 @@
 			$reservation["description"] = $description;
 		}
 		
-<<<<<<< HEAD
         //send data
 		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"], $email)) {
-=======
-		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"])) {
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
 			message_function(200, "The reservation data were successfully updated");
 		}
 		else {
@@ -228,26 +193,17 @@
 		return $response;
 	});
 
-<<<<<<< HEAD
     //delete resevation using id
     $app->delete("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
         validate_string($_string);
-=======
-    $app->delete("/Reservation/{id}", function (Request $request, Response $response, $args) {
-        //everyone
-        validate_token();
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         
         $id = $args["id"];
         
         $result = delete_reservation($id);
         
-<<<<<<< HEAD
         //if there is not reservation error else deleting
-=======
->>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         if (!$result) {
             error_function(404, "No reservation found for the id " . $id . ".");
         }
