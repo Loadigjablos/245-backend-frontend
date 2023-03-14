@@ -1,105 +1,65 @@
 <?php
-    // Database connection string
+    // Database conection string
     require "util/database.php";
 
-    /**
-     * Retrieve a reservation by its place name.
-     *
-     * @param string $place_name The name of the place to retrieve the reservation for.
-     * @return mixed The reservation data if found, or false if an error occurred, or an error message if not found.
-     */
     function get_reservation_by_name($place_name) {
         global $database;
 
         $result = $database->query("SELECT * FROM events WHERE place_name = '$place_name';");
 
         if ($result == false) {
-            // Handle database error
             error_function(500, "Error");
-        } else if ($result !== true) {
-            if ($result->num_rows > 0) {
-                // Reservation found, return data
+		} else if ($result !== true) {
+			if ($result->num_rows > 0) {
                 return $result->fetch_assoc();
-            } else {
-                // Reservation not found
+			} else {
                 error_function(404, "not Found");
             }
-        } else {
-            // Reservation not found
+		} else {
             error_function(404, "not Found");
         }
     }
 
-    /**
-     * Retrieve a reservation by its ID.
-     *
-     * @param string $id The ID of the reservation to retrieve.
-     * @return mixed The reservation data if found, or false if an error occurred, or an error message if not found.
-     */
     function get_reservation_by_id($id) {
         global $database;
 
         $result = $database->query("SELECT * FROM events WHERE id = '$id';");
 
         if ($result == false) {
-            // Handle database error
             error_function(500, "Error");
-        } else if ($result !== true) {
-            if ($result->num_rows > 0) {
-                // Reservation found, return data
+		} else if ($result !== true) {
+			if ($result->num_rows > 0) {
                 return $result->fetch_assoc();
-            } else {
-                // Reservation not found
+			} else {
                 error_function(404, "not Found");
             }
-        } else {
-            // Reservation not found
+		} else {
             error_function(404, "not Found");
         }
     }
 
-    /**
-     * Retrieve all reservations.
-     *
-     * @return mixed An array of reservation data if found, or false if an error occurred, or an error message if not found.
-     */
     function get_all_reservations() {
         global $database;
 
         $result = $database->query("SELECT * FROM events;");
 
         if ($result == false) {
-            // Handle database error
             error_function(500, "Error");
         } else if ($result !== true) {
             if ($result->num_rows > 0) {
-                // Reservations found, return array of data
                 $result_array = array();
                 while ($user = $result->fetch_assoc()) {
                     $result_array[] = $user;
                 }
                 return $result_array;
             } else {
-                // Reservations not found
                 error_function(404, "not Found");
             }
         } else {
-            // Reservations not found
             error_function(404, "not Found");
         }
     }
 
-    /**
-     * Create a new reservation and send an email with details and an .ics file attachment.
-     *
-     * @param string $from_date The start date and time of the reservation in Y-m-d H:i:s format.
-     * @param string $to_date The end date and time of the reservation in Y-m-d H:i:s format.
-     * @param string $place_name The name of the place being reserved.
-     * @param string $host The name of the person or organization making the reservation.
-     * @param string $description A description of the reservation.
-     * @param string $email The email address to send the reservation details and .ics file to.
-     * @return mixed True if the reservation was created and the email sent successfully, or false
-    */
     function create_reservation($from_date, $to_date, $place_name, $host, $description, $email) {
         global $database;
         
@@ -131,7 +91,6 @@
         $uid = uniqid();
 
         // Generate .ics file contents
-        //The source of that is: https://icalendar.org/iCalendar-RFC-5545/3-4-icalendar-object.html
         $ical = "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
@@ -149,7 +108,6 @@ END:VCALENDAR";
         $reservation_details .= "Place Name: " . $place_name . "\r\n\n";
         $reservation_details .= "From Date: " . $from_date . "\r\n\n";
         $reservation_details .= "To Date: " . $to_date . "\r\n\n";
-        $reservation_details .= "Description: " . $description . "\r\n\n";
 
         // Generate email body with reservation details and .ics file attachment
         $boundary = md5(time());
@@ -174,12 +132,6 @@ END:VCALENDAR";
             error_function(400, "Email sending failed, but the reservation was successfully created.");
         }
 
-        $to = "dominic.streit@ict.csbe.ch";
-        $subject = "New Reservation";
-        if (!mail($to, $subject, $body, $headers, "-r morhaf.mouayad@gmail.com")) {
-            error_function(400, "Email sending failed, but the reservation was successfully created.");
-        }
-
         return true;
     }
     
@@ -200,7 +152,6 @@ END:VCALENDAR";
         $uid = uniqid();
 
         // Generate .ics file contents
-        //The source is: https://icalendar.org/iCalendar-RFC-5545/3-4-icalendar-object.html
         $ical = "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
@@ -247,27 +198,22 @@ END:VCALENDAR";
         return true;
     }
     
-    /**
-     * Deletes a reservation from the `events` table by its ID.
-     * @param int $id The ID of the reservation to delete.
-     * @return bool|null Returns true if the reservation was deleted, null if no reservation was found with the given ID, or false if there was an error deleting the reservation.
-     */
     function delete_reservation($id) {
-        global $database; // Access the global database object.
-
-        // Delete the reservation with the given ID from the `events` table.
+        global $database;
+    
         $result = $database->query("DELETE FROM `events` WHERE id = '$id';");
-
-        // Check if there was an error deleting the reservation.
+            
         if (!$result) {
-            return false; // Return false if there was an error.
+            return false;
         }
-        // Check if no rows were affected by the delete query, meaning no reservation was found with the given ID.
         else if ($database->affected_rows == 0) {
-            return null; // Return null if no reservation was found with the given ID.
+            return null;
         }
         else {
-            return true; // Return true if the reservation was successfully deleted.
+            return true;
         }
     }
+    
+
+
 ?>
