@@ -2,6 +2,7 @@
     // Database conection string
     require "util/database.php";
  
+    //get all user from database
     function get_all_users() {
         global $database;
 
@@ -24,7 +25,7 @@
         }
     }
 
-
+    //change user
     function change_player_data($data, $id) {
         global $database;
 
@@ -35,6 +36,7 @@
         }
     }
 
+    //get user mail using id from database
     function get_user_email($id) {
         global $database;
 
@@ -57,6 +59,7 @@
 	    return $result;
     }
 
+    //get userdata from database using mail
     function get_user_by_mail($mail) {
         global $database;
 
@@ -75,6 +78,7 @@
         }
     }
     
+    //get user type from database using id 
     function get_user_type($id) {
         global $database;
     
@@ -94,6 +98,7 @@
         }
     }
        
+    //get userdata using name from database
     function get_user_by_username($name) {
         global $database;
 
@@ -112,6 +117,7 @@
         }
     }
 
+    //get userdata from database
     function get_user_by_id($id) {
         global $database;
 
@@ -134,6 +140,7 @@
 	    echo json_decode($result);
     }
 
+    //get user name and type from database
     function get_user_id($id) {
         global $database;
 
@@ -174,6 +181,7 @@
         }
     }
 
+    //create new user 
     function create_user($name, $email, $password, $type, $add_date) {
         global $database;
 
@@ -194,6 +202,7 @@
         }
     }
 
+    //update the userinformation
     function update_user($user_id, $name, $email, $password, $type, $add_date) {
 		global $database;
 
@@ -206,18 +215,7 @@
 		return true;
 	}
 
-    function update_product($product_id, $name, $active, $sku, $category_id, $image, $description, $price, $stock) {
-		global $database;
-
-		$result = $database->query("UPDATE `product` SET name = '$name', active = $active, sku = '$sku', category_id = $category_id, image = '$image', description = '$description', price = $price, stock = $stock WHERE product_id = $product_id");
-
-		if (!$result) {
-			return false;
-		}
-		
-		return true;
-	}
-
+    //delete the user from database
     function delete_user($name) {
 		global $database;
 		

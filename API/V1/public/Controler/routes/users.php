@@ -2,12 +2,16 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use Psr\Http\Message\ServerRequestInterface as Request;
 
+    //get all user information
     $app->get("/Users", function (Request $request, Response $response, $args) {
+        
+        //just for admin
         $id = user_validation("A");
         validate_token(); // unotherized pepole will get rejected
 
         $users = get_all_users();
 
+        //list all user information
         if ($users) {
             echo json_encode($users);
         }
@@ -20,9 +24,11 @@
 
         return $response;
     });
-    //hallo
 
+    //create new user using those information
     $app->post("/User", function (Request $request, Response $response, $args) {
+        
+        //just admin
         $id = user_validation("A");
         validate_token();
         validate_string($_string);
@@ -77,8 +83,10 @@
         return $response;        
     });
 
+    //update userinformation using id and those data
     $app->put("/User/{id}", function (Request $request, Response $response, $args) {
 
+        //just admin
 		$id = user_validation("A");
         validate_token();
         validate_string($_string);
@@ -95,6 +103,7 @@
 		
 		$request_data = json_decode($request_body_string, true);
 
+        //if the input is null it should not be updated
 		if (isset($request_data["name"])) {
 			$name = strip_tags(addslashes($request_data["name"]));
 		
@@ -148,6 +157,7 @@
 			$user["add_date"] = $add_date;
 		}
 		
+        //send information
 		if (update_user($user_id, $user["name"], $user["email"], $user["password_hash"], $user["type"], $user["add_date"])) {
 			message_function(200, "The userdata were successfully updated");
 		}
@@ -158,8 +168,11 @@
 		return $response;
 	});
     
+    //delete user using name 
     $app->delete("/User/{name}", function (Request $request, Response $response, $args) {
-		$id = user_validation("A");
+		
+        //just admin
+        $id = user_validation("A");
         validate_token();
         validate_string($_string);
 		

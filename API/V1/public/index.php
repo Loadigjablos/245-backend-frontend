@@ -61,10 +61,13 @@
             error_function(400, "username is invalid, must contain at least 5 characters");
         }
 
+        //password hash
         $password = hash("sha256", $password);
 
+        //get user by username
         $user = get_user_by_username($name);
 
+        //if password are wrong error and the name too
         if ($user["password_hash"] !==  $password) {
             error_function(404, "not Found");
         }
@@ -73,6 +76,7 @@
             error_function(404, "not Found");
         }
 
+        //create token and get message 
         $token = create_token($name, $password, $user["id"]);
 
         setcookie("token", $token, time() + 3600);
@@ -82,6 +86,7 @@
         return $response;
     });
 
+    //what a user can do
     function user_validation($required_role = null) {
         $current_user_id = validate_token();
         $current_user_role = get_user_type($current_user_id);
@@ -96,6 +101,7 @@
         $id = user_validation();
 		$user = get_user_id($id);
 
+        //if there a user get it else not
 		if ($user) {
 	        echo json_encode($user);
 		}
@@ -133,6 +139,7 @@
         }
     });
    
+    //require all RESTapi
     require "Controler/routes/users.php";
     require "Controler/routes/events.php";
     require "Controler/routes/place.php";

@@ -2,6 +2,7 @@
     // Database conection string
     require "util/database.php";
 
+    //get reservationdata using place name from database
     function get_reservation_by_name($place_name) {
         global $database;
 
@@ -20,6 +21,7 @@
         }
     }
 
+    //get reservationdata using id from database
     function get_reservation_by_id($id) {
         global $database;
 
@@ -38,6 +40,7 @@
         }
     }
 
+    //get all reservationsdata
     function get_all_reservations() {
         global $database;
 
@@ -60,6 +63,7 @@
         }
     }
 
+    //create new reservation and send mail
     function create_reservation($from_date, $to_date, $place_name, $host, $description, $email) {
         global $database;
         
@@ -132,6 +136,13 @@ END:VCALENDAR";
             error_function(400, "Email sending failed, but the reservation was successfully created.");
         }
 
+        // Send email with reservation details and .ics file attachment to sekretariat
+        $to = "dominic.streit@ict.csbe.ch";
+        $subject = "New Reservation";
+        if (!mail($to, $subject, $body, $headers, "-r morhaf.mouayad@gmail.com")) {
+            error_function(400, "Email sending failed, but the reservation was successfully created.");
+        }
+
         return true;
     }
     
@@ -193,11 +204,17 @@ END:VCALENDAR";
             error_function(400, "Email sending failed, but the reservation was successfully updated.");
         }
 
-        return true;
+        // Send email with reservation details and .ics file attachment to sekretariat
+        $to = "dominic.streit@ict.csbe.ch";
+        $subject = "New Reservation";
+        if (!mail($to, $subject, $body, $headers, "-r morhaf.mouayad@gmail.com")) {
+            error_function(400, "Email sending failed, but the reservation was successfully created.");
+        }
         
         return true;
     }
     
+    //delete a reservation using id
     function delete_reservation($id) {
         global $database;
     
