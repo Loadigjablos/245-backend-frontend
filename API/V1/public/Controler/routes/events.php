@@ -2,6 +2,10 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use Psr\Http\Message\ServerRequestInterface as Request;
 
+    /**
+     * Get Reservations
+     * A funciton for calling the query funciton and then list all Data
+     */
     $app->get("/Reservations", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
@@ -64,7 +68,7 @@
         $host = trim($request_data["host"]);
         $description = trim($request_data["description"]);
     
-        //The position field cannot be empty and must not exceed 2048 characters
+        //The fields cannot be empty and must not exceed 2048 characters
         if (empty($to_date)) {
             error_function(400, "The (to date) field must not be empty.");
         } 
