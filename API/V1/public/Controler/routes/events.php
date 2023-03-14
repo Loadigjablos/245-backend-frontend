@@ -2,14 +2,12 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use Psr\Http\Message\ServerRequestInterface as Request;
 
-    //get all reservations
     $app->get("/Reservations", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
 
         $reservations = get_all_reservations();
 
-        //list the data
         if ($reservations) {
             echo json_encode($reservations);
         }
@@ -23,7 +21,7 @@
         return $response;
     });
     
-    //list a reservation data using id
+    
     $app->get("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token(); // unotherized pepole will get rejected
@@ -32,7 +30,6 @@
 
         $reservation = get_reservation_by_id($id);
 
-        //list them
         if ($reservation) {
             echo json_encode($reservation);
         }
@@ -46,7 +43,6 @@
         return $response;
     });
 
-    //create reservation 
     $app->post("/Reservation", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
@@ -54,10 +50,10 @@
 
         $id = user_validation();
 
-        //get email for the mail
 		$email = get_user_email($id);
 
         $email = implode(':', $email);
+
 
         $request_body_string = file_get_contents("php://input");
         $request_data = json_decode($request_body_string, true);
@@ -68,7 +64,7 @@
         $host = trim($request_data["host"]);
         $description = trim($request_data["description"]);
     
-        //The fields cannot be empty and must not exceed 2048 characters
+        //The position field cannot be empty and must not exceed 2048 characters
         if (empty($to_date)) {
             error_function(400, "The (to date) field must not be empty.");
         } 
@@ -96,7 +92,7 @@
         }
 
         //checking if everything was good
-        if (create_reservation($from_date, $to_date, $place_name, $host, $description) === true) {
+        if (create_reservation($from_date, $to_date, $place_name, $host, $description, $email) === true) {
             message_function(200, "The reservation was successfully created.");
         } 
         else {
@@ -105,15 +101,12 @@
         return $response;        
     });
 
-    //update reservation using id
     $app->put("/Reservation/{id}", function (Request $request, Response $response, $args) {
 
-        //just admin
 		$id = user_validation("A");
         validate_token();
         validate_string($_string);
 
-        //get email
         $email = get_user_email($id);
 
         $email = implode(':', $email);
@@ -130,8 +123,6 @@
 		
 		$request_data = json_decode($request_body_string, true);
 
-
-        //if input is null it should not be updated
 		if (isset($request_data["from_date"])) {
 			$from_date = strip_tags(addslashes($request_data["from_date"]));
 		
@@ -182,7 +173,6 @@
 			$reservation["description"] = $description;
 		}
 		
-        //send data
 		if (update_reservation($id, $reservation["from_date"], $reservation["to_date"], $reservation["place_name"], $reservation["host"], $reservation["description"], $email)) {
 			message_function(200, "The reservation data were successfully updated");
 		}
@@ -193,7 +183,6 @@
 		return $response;
 	});
 
-    //delete resevation using id
     $app->delete("/Reservation/{id}", function (Request $request, Response $response, $args) {
         //everyone
         validate_token();
@@ -203,7 +192,6 @@
         
         $result = delete_reservation($id);
         
-        //if there is not reservation error else deleting
         if (!$result) {
             error_function(404, "No reservation found for the id " . $id . ".");
         }
