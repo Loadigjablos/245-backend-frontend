@@ -61,16 +61,18 @@
             error_function(400, "username is invalid, must contain at least 5 characters");
         }
 
+        //Password hash
         $password = hash("sha256", $password);
 
         $user = get_user_by_username($name);
 
+        //if Password or Username are wrong then it should have an error else okey
         if ($user["password_hash"] !==  $password) {
-            error_function(404, "not Found");
+            error_function(404, "Username or Password are not correct");
         }
 
         if ($user["name"] !==  $name) {
-            error_function(404, "not Found");
+            error_function(404, "Username or Password are not correct");
         }
 
         $token = create_token($name, $password, $user["id"]);
@@ -82,6 +84,7 @@
         return $response;
     });
 
+    //valifation for the users
     function user_validation($required_role = null) {
         $current_user_id = validate_token();
         $current_user_role = get_user_type($current_user_id);
@@ -91,6 +94,7 @@
         return $current_user_id;
     }
     
+    //What can I do and who am i 
     $app->get("/WhoAmI", function (Request $request, Response $response, $args) {
         // unotherized pepole will get rejected
         $id = user_validation();
@@ -109,6 +113,7 @@
         return $response;
     });
 
+    //old appointment should be deleted
     $app->get('/Time', function (Request $request, Response $response, $args) {
         // Connect to the database
         global $database;
@@ -133,6 +138,7 @@
         }
     });
    
+    //require all restAPI
     require "Controler/routes/users.php";
     require "Controler/routes/events.php";
     require "Controler/routes/place.php";
