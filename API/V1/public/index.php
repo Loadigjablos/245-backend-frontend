@@ -61,6 +61,7 @@
             error_function(400, "username is invalid, must contain at least 5 characters");
         }
 
+<<<<<<< HEAD
         //password hash
         $password = hash("sha256", $password);
 
@@ -68,15 +69,24 @@
         $user = get_user_by_username($name);
 
         //if password are wrong error and the name too
+=======
+        $password = hash("sha256", $password);
+
+        $user = get_user_by_username($name);
+
+>>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         if ($user["password_hash"] !==  $password) {
             error_function(404, "not Found");
         }
 
+<<<<<<< HEAD
         if ($user["name"] !==  $name) {
             error_function(404, "not Found");
         }
 
         //create token and get message 
+=======
+>>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
         $token = create_token($name, $password, $user["id"]);
 
         setcookie("token", $token, time() + 3600);
@@ -96,8 +106,13 @@
         return $current_user_id;
     }
     
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
     $app->get("/WhoAmI", function (Request $request, Response $response, $args) {
-        // unotherized pepole will get rejected
+// unotherized pepole will get rejected
         $id = user_validation();
 		$user = get_user_id($id);
 
@@ -139,7 +154,10 @@
         }
     });
    
+<<<<<<< HEAD
     //require all RESTapi
+=======
+>>>>>>> d90ee1b5d59cabd298a3044f520b353f53884c19
     require "Controler/routes/users.php";
     require "Controler/routes/events.php";
     require "Controler/routes/place.php";
